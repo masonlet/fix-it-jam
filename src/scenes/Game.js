@@ -30,6 +30,12 @@ export class Game extends Scene {
     }).setOrigin(0.5);
 
     // Conveyor Belt
+    const beltHeight = height * 0.15;
+    this.belt = this.add.tileSprite(
+      width / 2, height - beltHeight / 2,
+      width, beltHeight,
+      "belt-tile"
+    );
     
     // Item spawning system
     
@@ -42,6 +48,7 @@ export class Game extends Scene {
     this.elapsedTime += delta / 1000;
 
     // Update belt movement
+    this.belt.tilePositionX += this.beltSpeed * 2;
 
     // Move items along belt
 
@@ -74,12 +81,17 @@ export class Game extends Scene {
   }
 
   handleResize (gameSize) {
+    const { width, height } = gameSize;
+
     // Lives
 
     // Score
 
     // Conveyor Belt
-    
+    const beltHeight = height * 0.15;
+    this.belt.setPosition(width / 2, height - beltHeight / 2);
+    this.belt.setSize(width, beltHeight);
+
     // Items
     
     // Minigames
