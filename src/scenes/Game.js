@@ -37,7 +37,7 @@ export class Game extends Scene {
       width, beltHeight,
       "belt-tile"
     );
-    
+
     // Item spawning system
     this.items = [];
     this.spawnTimer = 0;
@@ -99,6 +99,11 @@ export class Game extends Scene {
     }
 
     // Difficulty ramping based on this.elapsedTime
+    this.beltSpeed = 1 + (this.elapsedTime / 60);
+    this.spawnInterval = Math.max(1.5, 3 - (this.elapsedTime / 40));
+    if (!this.activeMinigame) {
+      this.minigameTimeMax = Math.max(1.5, 3 - (this.elapsedTime / 60));
+    }
   }
 
   getLivesDisplay() {
@@ -122,14 +127,28 @@ export class Game extends Scene {
     const beltHeight = height * 0.15;
     const beltTop = height - beltHeight;
 
-    const sprite = this.add.image(
-      width + 50,
-      beltTop - 40,
-      "item-placeholder"
-    );
+    let maxFaults = 1;
+    if (this.elapsedTime > 90) maxFaults = 3;
+    else if (this.elapsedTime > 45) maxFaults = 2;
 
-    const faults = 1;
-    this.items.push({ sprite, faults });
+    const faults = Phaser.Math.Between(1, maxFaults);
+    const totalFaults = faults;
+    const container = this.add.container(width + 50, beltTop - 40);
+    const bg = this.add.rectangle(0, 0, 80, 80, 0x444444).setStrokeStyle(2, 0x888888);
+    container.add(bg);
+
+    const indicators = [];
+    for (let i = 0; i < faults; i++) {
+      const y = -20 + (i * 20);
+      const indicator = this.add.rectangle(0, y, 50, 14, 0xff4444).setStrokeStyle(1, 0xcc0000);
+      container.add(indicator);
+      indicators.push(indicator);
+    }
+
+    container.setSize(80, 80);
+    container.setInteractive();
+
+    this.items.push({ sprite: container, faults, totalFaults, indicators });
   }
 
   openMinigame (item ) {
@@ -179,8 +198,14 @@ export class Game extends Scene {
     const item = this.activeMinigame;
     item.faults--;
 
-    if (item.faults <= 0){
-      this.addScore(100);
+    const fixedIndex = item.totalFaults - item.faults - 1;
+    if (item.indicators[fixedIndex]) {
+      item.indicators[fixedIndex].setFillStyle(0x00cc66);
+      item.indicators[fixedIndex].setStrokeStyle(1, 0x009944);
+    }
+
+    if (item.faults <= 0) {
+      this.addScore(100 * item.totalFaults);
       item.sprite.destroy();
       this.items.splice(this.items.indexOf(item), 1);
     }
