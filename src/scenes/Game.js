@@ -17,18 +17,18 @@ export class Game extends Scene {
     const { width, height } = this.scale;
 
     // Lives
-    this.livesText = this.add.text(width / 2, 30, this.getLivesDisplay(), {
+    this.livesText = this.add.text(width * 0.3, 20, this.getLivesDisplay(), {
       fontFamily: 'Arial',
       fontSize: '24px',
       color: '#ffffff'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5, 0);
 
     // Score
-    this.scoreText = this.add.text(width / 2, height - 30, `Score: ${this.score}`, {
+    this.scoreText = this.add.text(width * 0.7, 20, `Score: ${this.score}`, {
       fontFamily: 'Arial',
       fontSize: '20px',
       color: '#aaaaaa'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5, 0);
 
     // Conveyor Belt
     const beltHeight = height * 0.15;
@@ -172,9 +172,9 @@ export class Game extends Scene {
   handleResize (gameSize) {
     const { width, height } = gameSize;
 
-    // Lives
-
-    // Score
+    // Lives & Score
+    this.livesText.setPosition(width * 0.3, 20);
+    this.scoreText.setPosition(width * 0.7, 20);
 
     // Conveyor Belt
     const beltHeight = height * 0.15;
