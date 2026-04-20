@@ -12,6 +12,7 @@ export class Game extends Scene {
     this.combo = 0;
     this.elapsedTime = 0;
     this.beltSpeed = 1;
+    this.activeMinigame = null;
 
     const { width, height } = this.scale;
 
@@ -43,6 +44,21 @@ export class Game extends Scene {
     this.spawnInterval = 3;
     
     // Minigames
+    this.input.on("pointerdown", (pointer) => {
+      if (this.activeMinigame) {
+        this.fixItem();
+        return;
+      }
+
+      for (const item of this.items) {
+        if (item.sprite.getBounds().contains(pointer.x, pointer.y)) {
+          this.openMinigame(item);
+          break;
+        }
+      }
+    });
+
+    // Resizing
     this.scale.on("resize", this.handleResize, this);
   }
 
@@ -63,6 +79,7 @@ export class Game extends Scene {
     const { width } = this.scale;
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
+      if (item.paused) continue;
       item.sprite.x -= this.beltSpeed * 2;
 
       // Check for items reaching the left edge
@@ -74,6 +91,22 @@ export class Game extends Scene {
     }
 
     // Difficulty ramping based on this.elapsedTime
+  }
+
+  getLivesDisplay() {
+    return '⚡'.repeat(this.lives);
+  }
+
+  loseLife (count = 1) {
+    this.lives = Math.max(0, this.lives - count);
+    this.livesText.setText(this.getLivesDisplay());
+
+    if (this.lives <= 0) this.gameOver();
+  }
+
+  addScore (points) {
+    this.score += points;
+    this.scoreText.setText(`Score: ${this.score}`);
   }
 
   spawnItem () {
@@ -91,20 +124,42 @@ export class Game extends Scene {
     this.items.push({ sprite, faults });
   }
 
-  getLivesDisplay() {
-    return '⚡'.repeat(this.lives);
+  openMinigame (item ) {
+    this.activeMinigame = item;
+    item.paused = true;
+
+    const { width, height } = this.scale;
+
+    this.overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5).setDepth(10);
+
+    this.popup = this.add.rectangle(width / 2, height / 2, 200, 150, 0x333333).setDepth(11).setStrokeStyle(2, 0x00cc66);
+
+    this.popupText = this.add.text(width / 2, height / 2, "TAP TO FIX!", {
+      fontFamily: "Arial",
+      fontSize: "24px",
+      color: "#00cc66",
+      fontStyle: "bold"
+    }).setOrigin(0.5).setDepth(12);
   }
 
-  loseLife (count = 1) {
-    this.lives = Math.max(0, this.lives - count);
-    this.livesText.setText(this.getLivesDisplay());
+  fixItem () {
+    if (!this.activeMinigame) return;
 
-    if (this.lives <= 0) this.gameOver();
-  }
+    const item = this.activeMinigame;
+    item.faults--;
 
-  addScore (points) {
-    this.score += points;
-    this.scoreText.setText(`Score: ${this.score}`);
+    if (item.faults <= 0){
+      this.addScore(100);
+      item.sprite.destroy();
+      this.items.splice(this.items.indexOf(item), 1);
+    } else {
+      item.paused = false;
+    }
+
+    this.overlay.destroy();
+    this.popup.destroy();
+    this.popupText.destroy();
+    this.activeMinigame = null;
   }
 
   gameOver () {
