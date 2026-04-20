@@ -90,6 +90,14 @@ export class Game extends Scene {
       }
     }
 
+    if (this.activeMinigame && this.minigameTimeLeft > 0) {
+      this.minigameTimeLeft -= delta / 1000;
+      const pct = Math.max(0, this.minigameTimeLeft / this.minigameTimeMax);
+      this.timerBar.setScale(pct, 1);
+
+      if (this.minigameTimeLeft <= 0) this.failMinigame();
+    }
+
     // Difficulty ramping based on this.elapsedTime
   }
 
@@ -140,6 +148,29 @@ export class Game extends Scene {
       color: "#00cc66",
       fontStyle: "bold"
     }).setOrigin(0.5).setDepth(12);
+
+    const barWidth = 160;
+    this.timerBarBg = this.add.rectangle(width / 2, height / 2 + 40, barWidth, 12, 0x222222).setDepth(12);
+    this.timerBar = this.add.rectangle(width / 2 - barWidth / 2, height / 2 + 40, barWidth, 12, 0x00cc66).setOrigin(0, 0.5).setDepth(13);
+
+    this.minigameTimeLeft = 3;
+    this.minigameTimeMax = 3;
+  }
+
+  failMinigame () {
+    if (!this.activeMinigame) return;
+
+    this.activeMinigame.paused = false;
+    this.closeMinigame();
+  }
+
+  closeMinigame () {
+    this.overlay.destroy();
+    this.popup.destroy();
+    this.popupText.destroy();
+    this.timerBarBg.destroy();
+    this.timerBar.destroy();
+    this.activeMinigame = null;
   }
 
   fixItem () {
@@ -152,14 +183,10 @@ export class Game extends Scene {
       this.addScore(100);
       item.sprite.destroy();
       this.items.splice(this.items.indexOf(item), 1);
-    } else {
-      item.paused = false;
     }
+    else item.paused = false;
 
-    this.overlay.destroy();
-    this.popup.destroy();
-    this.popupText.destroy();
-    this.activeMinigame = null;
+    this.closeMinigame();
   }
 
   gameOver () {
