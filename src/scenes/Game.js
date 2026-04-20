@@ -38,9 +38,11 @@ export class Game extends Scene {
     );
     
     // Item spawning system
+    this.items = [];
+    this.spawnTimer = 0;
+    this.spawnInterval = 3;
     
     // Minigames
-
     this.scale.on("resize", this.handleResize, this);
   }
 
@@ -50,11 +52,43 @@ export class Game extends Scene {
     // Update belt movement
     this.belt.tilePositionX += this.beltSpeed * 2;
 
-    // Move items along belt
+    // Spawn items
+    this.spawnTimer += delta / 1000;
+    if (this.spawnTimer >= this.spawnInterval) {
+      this.spawnTimer = 0;
+      this.spawnItem();
+    }
 
-    // Check for items reaching the left edge
+    // Move items along belt
+    const { width } = this.scale;
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const item = this.items[i];
+      item.sprite.x -= this.beltSpeed * 2;
+
+      // Check for items reaching the left edge
+      if (item.sprite.x < -50) {
+        this.loseLife(item.faults);
+        item.sprite.destroy();
+        this.items.splice(i, 1);
+      }
+    }
 
     // Difficulty ramping based on this.elapsedTime
+  }
+
+  spawnItem () {
+    const { width, height } = this.scale;
+    const beltHeight = height * 0.15;
+    const beltTop = height - beltHeight;
+
+    const sprite = this.add.image(
+      width + 50,
+      beltTop - 40,
+      "item-placeholder"
+    );
+
+    const faults = 1;
+    this.items.push({ sprite, faults });
   }
 
   getLivesDisplay() {
