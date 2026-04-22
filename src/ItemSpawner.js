@@ -44,20 +44,18 @@ export class ItemSpawner {
   }
 
   moveItems (beltSpeed, delta) {
+    let missedFaults = 0;
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.paused) continue;
       item.sprite.x -= beltSpeed * 120 * (delta / 1000);
-
-      // Check for items reaching the left edge
       if (item.sprite.x < -50) {
-        const faults = item.faults;
+        missedFaults += item.faults;
         item.sprite.destroy();
         this.items.splice(i, 1);
-        return { missed: true, faults };
       }
     }
-    return null;
+    return missedFaults > 0 ? { missed: true, faults: missedFaults } : null;
   }
 
   removeItem (item) {
