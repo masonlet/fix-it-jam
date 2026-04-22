@@ -3,6 +3,7 @@ import { Hud } from "../Hud";
 import { ConveyorBelt } from "../ConveyorBelt";
 import { ItemSpawner } from "../ItemSpawner";
 import { MinigameManager } from "../MinigameManager";
+import { Difficulty } from "../Difficulty";
 import { TUNING } from "../config/Tuning";
 
 export class Game extends Scene {
@@ -12,8 +13,8 @@ export class Game extends Scene {
 
   create () {
     // Variables
-    this.score = 0;
     this.elapsedTime = 0;
+    this.score = 0;
     this.lives = TUNING.LIVES_START;
     this.beltSpeed = TUNING.BELT_SPEED_BASE;
 
@@ -25,6 +26,8 @@ export class Game extends Scene {
     this.belt = new ConveyorBelt(this);
     this.spawner = new ItemSpawner(this);
     this.minigame = new MinigameManager(this);
+
+    this.difficulty = new Difficulty();
 
     // Input
     this.input.on("pointerdown", (pointer) => {
@@ -60,15 +63,10 @@ export class Game extends Scene {
     this.minigame.update(delta);
 
     // Difficulty ramping based on this.elapsedTime
-    this.beltSpeed = TUNING.BELT_SPEED_BASE + this.elapsedTime * TUNING.BELT_SPEED_RAMP_PER_SEC;
-    this.spawner.spawnInterval = Math.max(
-      TUNING.SPAWN_INTERVAL_MIN,
-      TUNING.SPAWN_INTERVAL_START - this.elapsedTime * TUNING.SPAWN_INTERVAL_RAMP_PER_SEC
-    );
-    if (!this.minigame.isActive) this.minigame.timeMax = Math.max(
-      TUNING.MINIGAME_TIME_MAX_MIN,
-      TUNING.MINIGAME_TIME_MAX_START - this.elapsedTime * TUNING.MINIGAME_TIME_RAMP_PER_SEC
-    );
+    const d = this.difficulty.update(this.elapsedTime);
+    this.beltSpeed = d.beltSpeed;
+    this.spawner.spawnInterval = d.spawnInterval;
+    if (!this.minigame.isActive) this.minigame.timeMax = d.minigameTimeMax;
   }
 
   loseLife (count = 1) {
