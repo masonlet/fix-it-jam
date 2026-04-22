@@ -32,9 +32,9 @@ export class MinigameManager {
       fontStyle: "bold"
     }).setOrigin(0.5).setDepth(12);
 
-    const barWidth = 160;
-    this.timerBarBg = this.scene.add.rectangle(width / 2, height / 2 + 40, barWidth, 12, 0x222222).setDepth(12);
-    this.timerBar = this.scene.add.rectangle(width / 2 - barWidth / 2, height / 2 + 40, barWidth, 12, 0x00cc66).setOrigin(0, 0.5).setDepth(13);
+    const barWidth = width * 0.6;
+    this.timerBarBg = this.scene.add.rectangle(width / 2, height - 20, barWidth, 14, 0x222222).setStrokeStyle(2, 0x444444).setDepth(12);
+    this.timerBar = this.scene.add.rectangle(width / 2 - barWidth / 2, height - 20, barWidth, 14, 0x00cc66).setOrigin(0, 0.5).setDepth(13);
 
     this.timeLeft = this.timeMax;
   }
