@@ -1,9 +1,9 @@
 import { Scene } from "phaser";
+import { Hud } from "../Hud";
+import { ConveyorBelt } from "../ConveyorBelt";
 import { ItemSpawner } from "../ItemSpawner";
 import { MinigameManager } from "../MinigameManager";
 import { TUNING } from "../config/Tuning";
-import { LAYOUT, DEPTH } from "../config/Layout";
-import { COLORS } from "../config/Colors";
 
 export class Game extends Scene {
   constructor () {
@@ -13,36 +13,16 @@ export class Game extends Scene {
   create () {
     // Variables
     this.score = 0;
-    this.lives = TUNING.LIVES_START;
-    this.combo = 0;
     this.elapsedTime = 0;
+    this.lives = TUNING.LIVES_START;
     this.beltSpeed = TUNING.BELT_SPEED_BASE;
 
-    const { width, height } = this.scale;
-
-    // Lives
-    this.livesText = this.add.text(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y, this.getLivesDisplay(), {
-      fontFamily: 'Arial',
-      fontSize: LAYOUT.LIVES_FONT_SIZE,
-      color: COLORS.TEXT_LIVES
-    }).setOrigin(0.5, 0);
-
-    // Score
-    this.scoreText = this.add.text(width * LAYOUT.SCORE_X_PCT, LAYOUT.HUD_Y, `Score: ${this.score}`, {
-      fontFamily: 'Arial',
-      fontSize: LAYOUT.SCORE_FONT_SIZE,
-      color: COLORS.TEXT_SCORE 
-    }).setOrigin(0.5, 0);
-
-    // Conveyor Belt
-    const beltHeight = height * LAYOUT.BELT_HEIGHT_PCT;
-    this.belt = this.add.tileSprite(
-      width / 2, height - beltHeight / 2,
-      width, beltHeight,
-      "belt-tile"
-    ).setDepth(DEPTH.BELT);
-
     // Systems
+    this.hud = new Hud(this);
+    this.hud.setLives(this.lives);
+    this.hud.setScore(this.score);
+
+    this.belt = new ConveyorBelt(this);
     this.spawner = new ItemSpawner(this);
     this.minigame = new MinigameManager(this);
 
@@ -67,7 +47,7 @@ export class Game extends Scene {
     this.elapsedTime += delta / 1000;
 
     // Belt
-    this.belt.tilePositionX += this.beltSpeed * TUNING.BELT_BASE_PX_PER_SEC * (delta / 1000);
+    this.belt.update(this.beltSpeed, delta);
 
     // Item Spawning
     this.spawner.update(delta, this.elapsedTime);
@@ -91,20 +71,15 @@ export class Game extends Scene {
     );
   }
 
-  getLivesDisplay() {
-    return '⚡'.repeat(this.lives);
-  }
-
   loseLife (count = 1) {
     this.lives = Math.max(0, this.lives - count);
-    this.livesText.setText(this.getLivesDisplay());
-
+    this.hud.setLives(this.lives);
     if (this.lives <= 0) this.gameOver();
   }
 
   addScore (points) {
     this.score += points;
-    this.scoreText.setText(`Score: ${this.score}`);
+    this.hud.setScore(this.score);
   }
 
   gameOver () {
@@ -116,14 +91,8 @@ export class Game extends Scene {
 
   handleResize (gameSize) {
     const { width, height } = gameSize;
-
-    // Lives & Score
-    this.livesText.setPosition(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y);
-    this.scoreText.setPosition(width * LAYOUT.SCORE_X_PCT, LAYOUT.HUD_Y);
-    const beltHeight = height * LAYOUT.BELT_HEIGHT_PCT; 
-    this.belt.setPosition(width / 2, height - beltHeight / 2);
-    this.belt.setSize(width, beltHeight);
-
+    this.hud.handleResize(width);
+    this.belt.handleResize(width, height);
     this.minigame.handleResize(width, height);
     this.spawner.handleResize(width, height);
   }
