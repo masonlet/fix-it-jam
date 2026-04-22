@@ -43,11 +43,11 @@ export class ItemSpawner {
     this.items.push({ sprite: container, faults, totalFaults, indicators, minigameType: "template" });
   }
 
-  moveItems (beltSpeed) {
+  moveItems (beltSpeed, delta) {
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.paused) continue;
-      item.sprite.x -= beltSpeed * 2;
+      item.sprite.x -= beltSpeed * 120 * (delta / 1000);
 
       // Check for items reaching the left edge
       if (item.sprite.x < -50) {

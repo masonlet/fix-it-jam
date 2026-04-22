@@ -64,13 +64,13 @@ export class Game extends Scene {
     this.elapsedTime += delta / 1000;
 
     // Belt
-    this.belt.tilePositionX += this.beltSpeed * 2;
+    this.belt.tilePositionX += this.beltSpeed * 120 * (delta / 1000);
 
     // Item Spawning
     this.spawner.update(delta, this.elapsedTime);
 
     // Item Movement
-    const missed = this.spawner.moveItems(this.beltSpeed);
+    const missed = this.spawner.moveItems(this.beltSpeed, delta);
     if (missed) this.loseLife(missed.faults);
 
     // Minigame
