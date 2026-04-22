@@ -1,3 +1,6 @@
+import { LAYOUT, DEPTH } from "../config/Layout";
+import { COLORS } from "../config/Colors";
+
 export class TemplateMinigame {
   constructor (scene, cx, cy, onComplete) {
     this.scene = scene;
@@ -5,10 +8,10 @@ export class TemplateMinigame {
 
     this.text = scene.add.text(cx, cy, "TAP TO FIX!", {
       fontFamily: "Arial",
-      fontSize: "24px",
-      color: "#00cc66",
+      fontSize: LAYOUT.MINIGAME_FONT_SIZE,
+      color: COLORS.TEXT_MINIGAME,
       fontStyle: "bold"
-    }).setOrigin(0.5).setDepth(14).setInteractive();
+    }).setOrigin(0.5).setDepth(DEPTH.MINIGAME).setInteractive();
 
     this.text.on("pointerdown", () => this.onComplete());
   }

@@ -1,6 +1,9 @@
 import { Scene } from "phaser";
 import { ItemSpawner } from "../ItemSpawner";
 import { MinigameManager } from "../MinigameManager";
+import { TUNING } from "../config/Tuning";
+import { LAYOUT, DEPTH } from "../config/Layout";
+import { COLORS } from "../config/Colors";
 
 export class Game extends Scene {
   constructor () {
@@ -10,34 +13,34 @@ export class Game extends Scene {
   create () {
     // Variables
     this.score = 0;
-    this.lives = 10;
+    this.lives = TUNING.LIVES_START;
     this.combo = 0;
     this.elapsedTime = 0;
-    this.beltSpeed = 1;
+    this.beltSpeed = TUNING.BELT_SPEED_BASE;
 
     const { width, height } = this.scale;
 
     // Lives
-    this.livesText = this.add.text(width * 0.3, 20, this.getLivesDisplay(), {
+    this.livesText = this.add.text(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y, this.getLivesDisplay(), {
       fontFamily: 'Arial',
-      fontSize: '24px',
-      color: '#ffffff'
+      fontSize: LAYOUT.LIVES_FONT_SIZE,
+      color: COLORS.TEXT_LIVES
     }).setOrigin(0.5, 0);
 
     // Score
-    this.scoreText = this.add.text(width * 0.7, 20, `Score: ${this.score}`, {
+    this.scoreText = this.add.text(width * LAYOUT.SCORE_X_PCT, LAYOUT.HUD_Y, `Score: ${this.score}`, {
       fontFamily: 'Arial',
-      fontSize: '20px',
-      color: '#aaaaaa'
+      fontSize: LAYOUT.SCORE_FONT_SIZE,
+      color: COLORS.TEXT_SCORE 
     }).setOrigin(0.5, 0);
 
     // Conveyor Belt
-    const beltHeight = height * 0.15;
+    const beltHeight = height * LAYOUT.BELT_HEIGHT_PCT;
     this.belt = this.add.tileSprite(
       width / 2, height - beltHeight / 2,
       width, beltHeight,
       "belt-tile"
-    );
+    ).setDepth(DEPTH.BELT);
 
     // Systems
     this.spawner = new ItemSpawner(this);
@@ -52,7 +55,7 @@ export class Game extends Scene {
     });
 
     this.onFixComplete = (result) => {
-      this.addScore(100 * result.item.totalFaults);
+      this.addScore(TUNING.SCORE_PER_FIX * result.item.totalFaults);
       this.spawner.removeItem(result.item);
     }
     
@@ -64,7 +67,7 @@ export class Game extends Scene {
     this.elapsedTime += delta / 1000;
 
     // Belt
-    this.belt.tilePositionX += this.beltSpeed * 120 * (delta / 1000);
+    this.belt.tilePositionX += this.beltSpeed * TUNING.BELT_BASE_PX_PER_SEC * (delta / 1000);
 
     // Item Spawning
     this.spawner.update(delta, this.elapsedTime);
@@ -77,10 +80,15 @@ export class Game extends Scene {
     this.minigame.update(delta);
 
     // Difficulty ramping based on this.elapsedTime
-    this.beltSpeed = 1 + (this.elapsedTime / 60);
-    this.spawner.spawnInterval = Math.max(1.5, 3 - (this.elapsedTime / 40));
-    if (!this.minigame.isActive)
-      this.minigame.timeMax = Math.max(1.5, 3 - (this.elapsedTime / 60));
+    this.beltSpeed = TUNING.BELT_SPEED_BASE + this.elapsedTime * TUNING.BELT_SPEED_RAMP_PER_SEC;
+    this.spawner.spawnInterval = Math.max(
+      TUNING.SPAWN_INTERVAL_MIN,
+      TUNING.SPAWN_INTERVAL_START - this.elapsedTime * TUNING.SPAWN_INTERVAL_RAMP_PER_SEC
+    );
+    if (!this.minigame.isActive) this.minigame.timeMax = Math.max(
+      TUNING.MINIGAME_TIME_MAX_MIN,
+      TUNING.MINIGAME_TIME_MAX_START - this.elapsedTime * TUNING.MINIGAME_TIME_RAMP_PER_SEC
+    );
   }
 
   getLivesDisplay() {
@@ -110,11 +118,9 @@ export class Game extends Scene {
     const { width, height } = gameSize;
 
     // Lives & Score
-    this.livesText.setPosition(width * 0.3, 20);
-    this.scoreText.setPosition(width * 0.7, 20);
-
-    // Conveyor Belt
-    const beltHeight = height * 0.15;
+    this.livesText.setPosition(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y);
+    this.scoreText.setPosition(width * LAYOUT.SCORE_X_PCT, LAYOUT.HUD_Y);
+    const beltHeight = height * LAYOUT.BELT_HEIGHT_PCT; 
     this.belt.setPosition(width / 2, height - beltHeight / 2);
     this.belt.setSize(width, beltHeight);
 
