@@ -16,4 +16,8 @@ export class TemplateMinigame {
   destroy () {
     this.text.destroy();
   }
+
+  onResize (width, height) {
+    this.text.setPosition(width / 2, height / 2);
+  }
 }

@@ -117,6 +117,9 @@ export class Game extends Scene {
     const beltHeight = height * 0.15;
     this.belt.setPosition(width / 2, height - beltHeight / 2);
     this.belt.setSize(width, beltHeight);
+
+    this.minigame.handleResize(width, height);
+    this.spawner.handleResize(width, height);
   }
 
   shutdown () {

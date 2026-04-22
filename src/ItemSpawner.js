@@ -70,5 +70,10 @@ export class ItemSpawner {
       
     return null;
   }
+
+  handleResize (width, height) {
+    const y = height - height * 0.15 - 40;
+    for (const item of this.items) item.sprite.y = y;
+  }
 }
 

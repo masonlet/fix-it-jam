@@ -103,5 +103,17 @@ export class MinigameManager {
       this.currentMinigame = null;
     }
   }
+
+  handleResize (width, height) {
+    if (!this.activeItem) return;
+    const barWidth = width * 0.6;
+    this.overlay.setPosition(width / 2, height / 2).setSize(width, height);
+    this.popup.setPosition(width / 2, height / 2);
+    this.timerBarBg.setPosition(width / 2, height - 20).setSize(barWidth, 14);
+    this.timerBar.setPosition(width / 2 - barWidth / 2, height - 20).setSize(barWidth, 14);
+    const pct = Math.max(0, this.timeLeft / this.timeMax);
+    this.timerBar.setScale(pct, 1);
+    this.currentMinigame?.onResize?.(width, height);
+  }
 }
 
