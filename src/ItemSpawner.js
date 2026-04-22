@@ -40,7 +40,7 @@ export class ItemSpawner {
     container.setSize(80, 80);
     container.setInteractive();
 
-    this.items.push({ sprite: container, faults, totalFaults, indicators });
+    this.items.push({ sprite: container, faults, totalFaults, indicators, minigameType: "template" });
   }
 
   moveItems (beltSpeed) {

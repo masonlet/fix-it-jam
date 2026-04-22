@@ -1,12 +1,18 @@
+import { TemplateMinigame } from "./minigames/TemplateMinigame";
+
+const MINIGAMES = {
+  template: TemplateMinigame,
+};
+
 export class MinigameManager {
   constructor (scene) {
-    this.scene      = scene;
-    this.timeMax    = 3;
-    this.timeLeft   = 0;
-    this.activeItem = null;
+    this.scene = scene;
+    this.timeMax  = 3;
+    this.timeLeft = 0;
+    this.activeItem      = null;
+    this.currentMinigame = null;
     this.overlay    = null;
     this.popup      = null;
-    this.popupText  = null;
     this.timerBarBg = null;
     this.timerBar   = null;
   }
@@ -16,31 +22,36 @@ export class MinigameManager {
   }
 
   open (item) {
+    const { width, height } = this.scene.scale;
     this.activeItem = item;
     item.paused = true;
 
-    const { width, height } = this.scene.scale;
-
+    // Overlay
     this.overlay = this.scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5).setDepth(10);
 
+    // Popup
     this.popup = this.scene.add.rectangle(width / 2, height / 2, 200, 150, 0x333333).setDepth(11).setStrokeStyle(2, 0x00cc66);
 
-    this.popupText = this.scene.add.text(width / 2, height / 2, "TAP TO FIX!", {
-      fontFamily: "Arial",
-      fontSize: "24px",
-      color: "#00cc66",
-      fontStyle: "bold"
-    }).setOrigin(0.5).setDepth(12);
-
+    // Timer
     const barWidth = width * 0.6;
     this.timerBarBg = this.scene.add.rectangle(width / 2, height - 20, barWidth, 14, 0x222222).setStrokeStyle(2, 0x444444).setDepth(12);
     this.timerBar = this.scene.add.rectangle(width / 2 - barWidth / 2, height - 20, barWidth, 14, 0x00cc66).setOrigin(0, 0.5).setDepth(13);
+
+    // Minigame
+    const MinigameClass = MINIGAMES[item.minigameType] || TemplateMinigame;
+    this.currentMinigame = new MinigameClass(
+      this.scene,
+      width / 2, height / 2,
+      () => this.fix()
+    );
 
     this.timeLeft = this.timeMax;
   }
 
   update (delta) {
     if (!this.activeItem || this.timeLeft <= 0) return;
+    if (this.currentMinigame?.update) this.currentMinigame.update(delta);
+    if (!this.activeItem) return;
 
     this.timeLeft -= delta / 1000;
     const pct = Math.max(0, this.timeLeft / this.timeMax);
@@ -68,7 +79,8 @@ export class MinigameManager {
 
     const result = { fixed: true, complete: item.faults <= 0, item };
     if (!result.complete) item.paused = false;
-    
+    else if (this.scene.onFixComplete) this.scene.onFixComplete(result);
+
     this.close();
     return result;
   }
@@ -83,10 +95,13 @@ export class MinigameManager {
   close () {
     this.overlay.destroy();
     this.popup.destroy();
-    this.popupText.destroy();
     this.timerBarBg.destroy();
     this.timerBar.destroy();
     this.activeItem = null;
+    if (this.currentMinigame) {
+      this.currentMinigame.destroy();
+      this.currentMinigame = null;
+    }
   }
 }
 

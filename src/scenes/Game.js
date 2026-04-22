@@ -45,18 +45,16 @@ export class Game extends Scene {
 
     // Input
     this.input.on("pointerdown", (pointer) => {
-      if (this.minigame.isActive) {
-        const result = this.minigame.fix();
-        if (result && result.complete) {
-          this.addScore(100 * result.item.totalFaults);
-          this.spawner.removeItem(result.item);
-        }
-        return;
-      }
+      if (this.minigame.isActive) return;
  
       const item = this.spawner.getItemAt(pointer.x, pointer.y);
       if (item) this.minigame.open(item);
     });
+
+    this.onFixComplete = (result) => {
+      this.addScore(100 * result.item.totalFaults);
+      this.spawner.removeItem(result.item);
+    }
     
     // Resizing
     this.scale.on("resize", this.handleResize, this);
