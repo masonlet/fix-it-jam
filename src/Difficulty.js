@@ -1,16 +1,18 @@
-import { TUNING } from "./config/Tuning";
+import { BELT } from "./config/Belt";
+import { GAME } from "./config/Game";
+import { MINIGAME } from "./config/Minigame";
 
 export class Difficulty {
   update (elapsedTime) {
     return {
-      beltSpeed: TUNING.BELT_SPEED_BASE + elapsedTime * TUNING.BELT_SPEED_RAMP_PER_SEC,
+      beltSpeed: BELT.TUNING.SPEED_BASE + elapsedTime * BELT.TUNING.SPEED_RAMP_PER_SEC,
       spawnInterval: Math.max(
-        TUNING.SPAWN_INTERVAL_MIN,
-        TUNING.SPAWN_INTERVAL_START - elapsedTime * TUNING.SPAWN_INTERVAL_RAMP_PER_SEC
+        GAME.TUNING.SPAWN_INTERVAL_MIN,
+        GAME.TUNING.SPAWN_INTERVAL_START - elapsedTime * GAME.TUNING.SPAWN_INTERVAL_RAMP_PER_SEC
       ),
       minigameTimeMax: Math.max(
-        TUNING.MINIGAME_TIME_MAX_MIN,
-        TUNING.MINIGAME_TIME_MAX_START - elapsedTime * TUNING.MINIGAME_TIME_RAMP_PER_SEC
+        MINIGAME.TUNING.TIME_MAX_MIN,
+        MINIGAME.TUNING.TIME_MAX_START - elapsedTime * MINIGAME.TUNING.TIME_RAMP_PER_SEC
       ),
     };
   }

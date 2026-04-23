@@ -1,7 +1,9 @@
 import { TemplateMinigame } from "./minigames/TemplateMinigame";
-import { TUNING } from "./config/Tuning";
-import { LAYOUT, DEPTH } from "./config/Layout";
-import { COLORS } from "./config/Colors";
+import { DEPTH } from "./config/Depth";
+import { INDICATOR } from "./config/Indicator";
+import { POPUP } from "./config/Popup";
+import { TIMER } from "./config/Timer";
+import { MINIGAME } from "./config/Minigame";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
 
 const MINIGAMES = {
@@ -11,7 +13,7 @@ const MINIGAMES = {
 export class MinigameManager {
   constructor (scene) {
     this.scene = scene;
-    this.timeMax  = TUNING.MINIGAME_TIME_MAX_START;
+    this.timeMax  = MINIGAME.TUNING.TIME_MAX_START;
     this.timeLeft = 0;
     this.activeItem      = null;
     this.currentMinigame = null;
@@ -33,30 +35,30 @@ export class MinigameManager {
     // Overlay
     this.overlay = this.scene.add.rectangle(
       width / 2, height / 2, width, height,
-      COLORS.OVERLAY_FILL, COLORS.OVERLAY_ALPHA
+      POPUP.COLOUR.OVERLAY_FILL, POPUP.COLOUR.OVERLAY_ALPHA
     ).setDepth(DEPTH.OVERLAY);
 
     // Popup
     this.popup = this.scene.add.rectangle(
       width / 2, height / 2,
-      LAYOUT.POPUP_WIDTH, LAYOUT.POPUP_HEIGHT,
-      COLORS.POPUP_FILL
+      POPUP.LAYOUT.WIDTH, POPUP.LAYOUT.HEIGHT,
+      POPUP.COLOUR.FILL
     ).setDepth(DEPTH.POPUP)
-     .setStrokeStyle(LAYOUT.POPUP_STROKE_WIDTH, COLORS.POPUP_STROKE);
+     .setStrokeStyle(POPUP.LAYOUT.STROKE_WIDTH, POPUP.COLOUR.STROKE);
 
     // Timer
-    const barWidth = width * LAYOUT.TIMER_BAR_WIDTH_PCT;
+    const barWidth = width * TIMER.LAYOUT.BAR_WIDTH_PCT;
     this.timerBarBg = this.scene.add.rectangle(
-      width / 2, height - LAYOUT.TIMER_BAR_Y_OFFSET,
-      barWidth, LAYOUT.TIMER_BAR_HEIGHT,
-      COLORS.TIMER_BG_FILL
-    ).setStrokeStyle(LAYOUT.TIMER_BAR_STROKE_WIDTH, COLORS.TIMER_BG_STROKE)
+      width / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET,
+      barWidth, TIMER.LAYOUT.BAR_HEIGHT,
+      TIMER.COLOUR.BG_FILL
+    ).setStrokeStyle(TIMER.LAYOUT.BAR_STROKE_WIDTH, TIMER.COLOUR.BG_STROKE)
      .setDepth(DEPTH.TIMER_BG);
 
     this.timerBar = this.scene.add.rectangle(
-      width / 2 - barWidth / 2, height - LAYOUT.TIMER_BAR_Y_OFFSET,
-      barWidth, LAYOUT.TIMER_BAR_HEIGHT,
-      COLORS.TIMER_BAR_FILL
+      width / 2 - barWidth / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET,
+      barWidth, TIMER.LAYOUT.BAR_HEIGHT,
+      TIMER.COLOUR.BAR_FILL
     ).setOrigin(0, 0.5).setDepth(DEPTH.TIMER_BAR);
 
     // Minigame
@@ -95,8 +97,8 @@ export class MinigameManager {
 
     const fixedIndex = item.totalFaults - item.faults - 1;
     if (item.indicators[fixedIndex]) {
-      item.indicators[fixedIndex].setFillStyle(COLORS.FIXED_FILL);
-      item.indicators[fixedIndex].setStrokeStyle(LAYOUT.INDICATOR_STROKE_WIDTH, COLORS.FIXED_STROKE);
+      item.indicators[fixedIndex].setFillStyle(INDICATOR.COLOUR.FIXED_FILL);
+      item.indicators[fixedIndex].setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FIXED_STROKE);
     }
 
     const result = { fixed: true, complete: item.faults <= 0, item };
@@ -128,11 +130,11 @@ export class MinigameManager {
 
   handleResize (width, height) {
     if (!this.activeItem) return;
-    const barWidth = width * LAYOUT.TIMER_BAR_WIDTH_PCT;
+    const barWidth = width * TIMER.LAYOUT.BAR_WIDTH_PCT;
     this.overlay.setPosition(width / 2, height / 2).setSize(width, height);
     this.popup.setPosition(width / 2, height / 2);
-    this.timerBarBg.setPosition(width / 2, height - LAYOUT.TIMER_BAR_Y_OFFSET).setSize(barWidth, LAYOUT.TIMER_BAR_HEIGHT);
-    this.timerBar.setPosition(width / 2 - barWidth / 2, height - LAYOUT.TIMER_BAR_Y_OFFSET).setSize(barWidth, LAYOUT.TIMER_BAR_HEIGHT);
+    this.timerBarBg.setPosition(width / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET).setSize(barWidth, TIMER.LAYOUT.BAR_HEIGHT);
+    this.timerBar.setPosition(width / 2 - barWidth / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET).setSize(barWidth, TIMER.LAYOUT.BAR_HEIGHT);
     const pct = Math.max(0, this.timeLeft / this.timeMax);
     this.timerBar.setScale(pct, 1);
     this.currentMinigame?.onResize?.(width, height);

@@ -1,5 +1,5 @@
-import { LAYOUT, DEPTH } from "../config/Layout";
-import { COLORS } from "../config/Colors";
+import { DEPTH } from "../config/Depth";
+import { MINIGAME } from "../config/Minigame";
 
 export class TemplateMinigame {
   constructor (scene, cx, cy, onComplete) {
@@ -8,8 +8,8 @@ export class TemplateMinigame {
 
     this.text = scene.add.text(cx, cy, "TAP TO FIX!", {
       fontFamily: "Arial",
-      fontSize: LAYOUT.MINIGAME_FONT_SIZE,
-      color: COLORS.TEXT_MINIGAME,
+      fontSize: MINIGAME.LAYOUT.FONT_SIZE,
+      color: MINIGAME.COLOUR.TEXT,
       fontStyle: "bold"
     }).setOrigin(0.5).setDepth(DEPTH.MINIGAME).setInteractive();
 

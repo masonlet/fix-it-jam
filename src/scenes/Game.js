@@ -4,7 +4,9 @@ import { ConveyorBelt } from "../ConveyorBelt";
 import { ItemSpawner } from "../ItemSpawner";
 import { MinigameManager } from "../MinigameManager";
 import { Difficulty } from "../Difficulty";
-import { TUNING } from "../config/Tuning";
+
+import { GAME } from "../config/Game";
+import { BELT } from "../config/Belt";
 
 export class Game extends Scene {
   constructor () {
@@ -15,8 +17,8 @@ export class Game extends Scene {
     // Variables
     this.elapsedTime = 0;
     this.score = 0;
-    this.lives = TUNING.LIVES_START;
-    this.beltSpeed = TUNING.BELT_SPEED_BASE;
+    this.lives = GAME.TUNING.LIVES_START;
+    this.beltSpeed = BELT.TUNING.SPEED_BASE;
 
     // Systems
     this.hud = new Hud(this);
@@ -38,7 +40,7 @@ export class Game extends Scene {
     });
 
     this.onFixComplete = (result) => {
-      this.addScore(TUNING.SCORE_PER_FIX * result.item.totalFaults);
+      this.addScore(GAME.TUNING.SCORE_PER_FIX * result.item.totalFaults);
       this.spawner.removeItem(result.item);
     }
     

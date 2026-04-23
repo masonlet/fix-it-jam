@@ -1,6 +1,8 @@
-import { TUNING } from "./config/Tuning";
-import { LAYOUT, DEPTH } from "./config/Layout";
-import { COLORS } from "./config/Colors";
+import { DEPTH } from "./config/Depth";
+import { BELT } from "./config/Belt";
+import { ITEM } from "./config/Item";
+import { GAME } from "./config/Game";
+import { INDICATOR } from "./config/Indicator";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
 
 export class ItemSpawner {
@@ -8,7 +10,7 @@ export class ItemSpawner {
     this.scene = scene;
     this.items = [];
     this.spawnTimer = 0;
-    this.spawnInterval = TUNING.SPAWN_INTERVAL_START;
+    this.spawnInterval = GAME.TUNING.SPAWN_INTERVAL_START;
   }
 
   update (delta, elapsedTime) {
@@ -21,38 +23,37 @@ export class ItemSpawner {
 
   spawn  (elapsedTime) {
     const { width, height } = this.scene.scale;
-    const beltHeight = height * LAYOUT.BELT_HEIGHT_PCT;
-    const beltTop = height - beltHeight;
+    const beltTop = height - (height * BELT.LAYOUT.HEIGHT_PCT);
 
     let maxFaults = 1;
-    if      (elapsedTime > TUNING.FAULTS_TIER_3_AT) maxFaults = 3;
-    else if (elapsedTime > TUNING.FAULTS_TIER_2_AT) maxFaults = 2;
+    if      (elapsedTime > GAME.TUNING.FAULTS_TIER_3_AT) maxFaults = 3;
+    else if (elapsedTime > GAME.TUNING.FAULTS_TIER_2_AT) maxFaults = 2;
 
     const faults = Phaser.Math.Between(1, maxFaults);
     const totalFaults = faults;
 
     const container = this.scene.add.container(
-      width + LAYOUT.ITEM_SPAWN_X_OFFSET,
-      beltTop - LAYOUT.ITEM_Y_OFFSET
+      width + ITEM.LAYOUT.SPAWN_X_OFFSET,
+      beltTop - ITEM.LAYOUT.Y_OFFSET
     ).setDepth(DEPTH.ITEMS);
     const bg = this.scene.add.rectangle(
-      0, 0, LAYOUT.ITEM_SIZE, LAYOUT.ITEM_SIZE, COLORS.ITEM_FILL
-    ).setStrokeStyle(LAYOUT.ITEM_STROKE_WIDTH, COLORS.ITEM_STROKE);
+      0, 0, ITEM.LAYOUT.SIZE, ITEM.LAYOUT.SIZE, ITEM.COLOUR.FILL
+    ).setStrokeStyle(ITEM.LAYOUT.STROKE_WIDTH, ITEM.COLOUR.STROKE);
     container.add(bg);
 
     const indicators = [];
     for (let i = 0; i < faults; i++) {
-      const y = LAYOUT.INDICATOR_Y_START + (i * LAYOUT.INDICATOR_SPACING);
+      const y = INDICATOR.LAYOUT.Y_START + (i * INDICATOR.LAYOUT.SPACING);
       const indicator = this.scene.add.rectangle(
         0, y,
-        LAYOUT.INDICATOR_WIDTH, LAYOUT.INDICATOR_HEIGHT,
-        COLORS.FAULT_FILL
-      ).setStrokeStyle(LAYOUT.INDICATOR_STROKE_WIDTH, COLORS.FAULT_STROKE);
+        INDICATOR.LAYOUT.WIDTH, INDICATOR.LAYOUT.HEIGHT,
+        INDICATOR.COLOUR.FAULT_FILL
+      ).setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE);
       container.add(indicator);
       indicators.push(indicator);
     }
 
-    container.setSize(LAYOUT.ITEM_SIZE, LAYOUT.ITEM_SIZE);
+    container.setSize(ITEM.LAYOUT.SIZE, ITEM.LAYOUT.SIZE);
 
     this.items.push({ sprite: container, faults, totalFaults, indicators, minigameType: MINIGAME_TYPES.TEMPLATE });
   }
@@ -62,8 +63,8 @@ export class ItemSpawner {
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.paused) continue;
-      item.sprite.x -= beltSpeed * TUNING.BELT_BASE_PX_PER_SEC * (delta / 1000);
-      if (item.sprite.x < LAYOUT.ITEM_DESPAWN_X) {
+      item.sprite.x -= beltSpeed * BELT.TUNING.BASE_PX_PER_SEC * (delta / 1000);
+      if (item.sprite.x < ITEM.LAYOUT.DESPAWN_X) {
         missedFaults += item.faults;
         item.sprite.destroy();
         this.items.splice(i, 1);
@@ -81,12 +82,12 @@ export class ItemSpawner {
     for (const item of this.items) 
       if (item.sprite.getBounds().contains(x, y))
         return item;
-      
+
     return null;
   }
 
   handleResize (width, height) {
-    const y = height - height * LAYOUT.BELT_HEIGHT_PCT - LAYOUT.ITEM_Y_OFFSET;
+    const y = height - height * BELT.LAYOUT.HEIGHT_PCT - ITEM.LAYOUT.Y_OFFSET;
     for (const item of this.items) item.sprite.y = y;
   }
 }
