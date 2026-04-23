@@ -41,23 +41,25 @@ export class MinigameManager {
     // Popup
     this.popup = this.scene.add.rectangle(
       width / 2, height / 2,
-      POPUP.LAYOUT.WIDTH, POPUP.LAYOUT.HEIGHT,
+      width * POPUP.LAYOUT.WIDTH_PCT, height * POPUP.LAYOUT.HEIGHT_PCT,
       POPUP.COLOUR.FILL
     ).setDepth(DEPTH.POPUP)
      .setStrokeStyle(POPUP.LAYOUT.STROKE_WIDTH, POPUP.COLOUR.STROKE);
 
     // Timer
     const barWidth = width * TIMER.LAYOUT.BAR_WIDTH_PCT;
+    const barHeight = height * TIMER.LAYOUT.BAR_HEIGHT_PCT;
+    const barYOffset = height * TIMER.LAYOUT.BAR_Y_OFFSET_PCT;
     this.timerBarBg = this.scene.add.rectangle(
-      width / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET,
-      barWidth, TIMER.LAYOUT.BAR_HEIGHT,
+      width / 2, height - barYOffset,
+      barWidth, barHeight,
       TIMER.COLOUR.BG_FILL
     ).setStrokeStyle(TIMER.LAYOUT.BAR_STROKE_WIDTH, TIMER.COLOUR.BG_STROKE)
      .setDepth(DEPTH.TIMER_BG);
 
     this.timerBar = this.scene.add.rectangle(
-      width / 2 - barWidth / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET,
-      barWidth, TIMER.LAYOUT.BAR_HEIGHT,
+      width / 2 - barWidth / 2, height - barYOffset,
+      barWidth, barHeight,
       TIMER.COLOUR.BAR_FILL
     ).setOrigin(0, 0.5).setDepth(DEPTH.TIMER_BAR);
 
@@ -131,10 +133,14 @@ export class MinigameManager {
   handleResize (width, height) {
     if (!this.activeItem) return;
     const barWidth = width * TIMER.LAYOUT.BAR_WIDTH_PCT;
+    const barHeight = height * TIMER.LAYOUT.BAR_HEIGHT_PCT;
+    const barYOffset = height * TIMER.LAYOUT.BAR_Y_OFFSET_PCT;
     this.overlay.setPosition(width / 2, height / 2).setSize(width, height);
-    this.popup.setPosition(width / 2, height / 2);
-    this.timerBarBg.setPosition(width / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET).setSize(barWidth, TIMER.LAYOUT.BAR_HEIGHT);
-    this.timerBar.setPosition(width / 2 - barWidth / 2, height - TIMER.LAYOUT.BAR_Y_OFFSET).setSize(barWidth, TIMER.LAYOUT.BAR_HEIGHT);
+    this.popup.setPosition(width / 2, height / 2).setSize(
+      width * POPUP.LAYOUT.WIDTH_PCT, height * POPUP.LAYOUT.HEIGHT_PCT
+    );
+    this.timerBarBg.setPosition(width / 2, height - barYOffset).setSize(barWidth, barHeight);
+    this.timerBar.setPosition(width / 2 - barWidth / 2, height - barYOffset).setSize(barWidth, barHeight);
     const pct = Math.max(0, this.timeLeft / this.timeMax);
     this.timerBar.setScale(pct, 1);
     this.currentMinigame?.onResize?.(width, height);

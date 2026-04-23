@@ -1,7 +1,7 @@
 export const POPUP = {
   LAYOUT: {
-    WIDTH: 200,
-    HEIGHT: 150,
+    WIDTH_PCT: 0.5,
+    HEIGHT_PCT: 0.375,
     STROKE_WIDTH: 2,
   },
   COLOUR: {
