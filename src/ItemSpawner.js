@@ -4,6 +4,7 @@ import { ITEM } from "./config/Item";
 import { GAME } from "./config/Game";
 import { INDICATOR } from "./config/Indicator";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
+const TYPES = Object.values(MINIGAME_TYPES);
 
 export class ItemSpawner {
   constructor (scene) {
@@ -57,7 +58,10 @@ export class ItemSpawner {
     }
 
     container.setSize(itemSize);
-    this.items.push({ sprite: container, bg, faults, totalFaults, indicators, minigameType: MINIGAME_TYPES.TEMPLATE });
+    this.items.push({
+      sprite: container, bg, faults, totalFaults, indicators,
+      minigameType: Phaser.Math.RND.pick(TYPES)
+    });
   }
 
   moveItems (beltSpeed, delta) {

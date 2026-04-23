@@ -1,13 +1,17 @@
-import { TemplateMinigame } from "./minigames/TemplateMinigame";
 import { DEPTH } from "./config/Depth";
 import { INDICATOR } from "./config/Indicator";
 import { POPUP } from "./config/Popup";
 import { TIMER } from "./config/Timer";
+
 import { MINIGAME } from "./config/Minigame";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
 
+import { TemplateMinigame } from "./minigames/TemplateMinigame";
+import { TapMinigame } from "./minigames/TapMinigame";
+
 const MINIGAMES = {
   [MINIGAME_TYPES.TEMPLATE]: TemplateMinigame,
+  [MINIGAME_TYPES.TAP]: TapMinigame,
 };
 
 export class MinigameManager {
