@@ -4,4 +4,5 @@ export const MINIGAME_TYPES = {
   DRAG: "drag",
   SPIN: "spin",
   SWIPE: "swipe",
+  TIMING: "timing",
 };

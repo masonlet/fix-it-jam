@@ -11,6 +11,7 @@ import { PumpMinigame } from "./minigames/PumpMinigame";
 import { DragMinigame } from "./minigames/DragMinigame";
 import { SpinMinigame } from "./minigames/SpinMinigame";
 import { SwipeMinigame } from "./minigames/SwipeMinigame";
+import { TimingMinigame } from "./minigames/TimingMinigame";
 
 const MINIGAMES = {
   [MINIGAME_TYPES.TAP]: TapMinigame,
@@ -18,6 +19,7 @@ const MINIGAMES = {
   [MINIGAME_TYPES.DRAG]: DragMinigame,
   [MINIGAME_TYPES.SPIN]: SpinMinigame,
   [MINIGAME_TYPES.SWIPE]: SwipeMinigame,
+  [MINIGAME_TYPES.TIMING]: TimingMinigame,
 };
 
 export class MinigameManager {
@@ -79,7 +81,8 @@ export class MinigameManager {
     this.currentMinigame = new MinigameClass(
       this.scene,
       width / 2, height / 2,
-      () => this.fix()
+      () => this.fix(),
+      () => this.fail()
     );
 
     this.timeLeft = this.timeMax;

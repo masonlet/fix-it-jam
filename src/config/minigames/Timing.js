@@ -1,0 +1,22 @@
+export const TIMING = {
+  LAYOUT: {
+    RADIUS_PCT: 0.18,
+    THICKNESS_PCT: 0.015,
+    NEEDLE_LENGTH_PCT: 0.16,
+    NEEDLE_WIDTH_PCT: 0.01,
+    ZONE_ARC_DEG: 60,
+    STROKE_WIDTH: 2,
+  },
+  TUNING: {
+    HITS_REQUIRED: 3,
+    MISSES_ALLOWED: 3,
+    NEEDLE_SPEED_DEG_PER_SEC: 300,
+    ARC_START_DEG: 0,
+    ARC_SWEEP_DEG: 360,
+  },
+  COLOUR: {
+    ARC_BG: 0x222222,
+    ZONE_FILL: 0x00cc66,
+    NEEDLE_FILL: 0xffffff,
+  },
+}
