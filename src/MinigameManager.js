@@ -6,13 +6,11 @@ import { TIMER } from "./config/Timer";
 import { MINIGAME } from "./config/Minigame";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
 
-import { TemplateMinigame } from "./minigames/TemplateMinigame";
 import { TapMinigame } from "./minigames/TapMinigame";
 import { PumpMinigame } from "./minigames/PumpMinigame";
 import { DragMinigame } from "./minigames/DragMinigame";
 
 const MINIGAMES = {
-  [MINIGAME_TYPES.TEMPLATE]: TemplateMinigame,
   [MINIGAME_TYPES.TAP]: TapMinigame,
   [MINIGAME_TYPES.PUMP]: PumpMinigame,
   [MINIGAME_TYPES.DRAG]: DragMinigame
@@ -72,7 +70,8 @@ export class MinigameManager {
     ).setOrigin(0, 0.5).setDepth(DEPTH.TIMER_BAR);
 
     // Minigame
-    const MinigameClass = MINIGAMES[item.minigameType] || TemplateMinigame;
+    const MinigameClass = MINIGAMES[item.minigameType];
+    if (!MinigameClass) throw new Error("Invalid or empty minigame")
     this.currentMinigame = new MinigameClass(
       this.scene,
       width / 2, height / 2,
