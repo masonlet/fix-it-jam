@@ -10,12 +10,14 @@ import { TapMinigame } from "./minigames/TapMinigame";
 import { PumpMinigame } from "./minigames/PumpMinigame";
 import { DragMinigame } from "./minigames/DragMinigame";
 import { SpinMinigame } from "./minigames/SpinMinigame";
+import { SwipeMinigame } from "./minigames/SwipeMinigame";
 
 const MINIGAMES = {
   [MINIGAME_TYPES.TAP]: TapMinigame,
   [MINIGAME_TYPES.PUMP]: PumpMinigame,
   [MINIGAME_TYPES.DRAG]: DragMinigame,
   [MINIGAME_TYPES.SPIN]: SpinMinigame,
+  [MINIGAME_TYPES.SWIPE]: SwipeMinigame,
 };
 
 export class MinigameManager {
