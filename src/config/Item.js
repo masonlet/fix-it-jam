@@ -1,10 +1,9 @@
 export const ITEM = {
   LAYOUT: {
-    SIZE: 80,
+    SIZE_PCT: 0.15,
     STROKE_WIDTH: 2,
-    Y_OFFSET: 40,
-    SPAWN_X_OFFSET: 50,
-    DESPAWN_X: -50,
+    SPAWN_X_OFFSET_PCT: 0.1,
+    DESPAWN_X_PCT: -0.1,
   },
   COLOUR: {
     FILL: 0x444444,

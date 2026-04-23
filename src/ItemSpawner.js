@@ -11,6 +11,8 @@ export class ItemSpawner {
     this.items = [];
     this.spawnTimer = 0;
     this.spawnInterval = GAME.TUNING.SPAWN_INTERVAL_START;
+    this.width = scene.scale.width;
+    this.height = scene.scale.height;
   }
 
   update (delta, elapsedTime) {
@@ -22,8 +24,8 @@ export class ItemSpawner {
   }
 
   spawn  (elapsedTime) {
-    const { width, height } = this.scene.scale;
-    const beltTop = height - (height * BELT.LAYOUT.HEIGHT_PCT);
+    const beltTop = this.height - (this.height * BELT.LAYOUT.HEIGHT_PCT);
+    const itemSize = this.width * ITEM.LAYOUT.SIZE_PCT;
 
     let maxFaults = 1;
     if      (elapsedTime > GAME.TUNING.FAULTS_TIER_3_AT) maxFaults = 3;
@@ -33,38 +35,40 @@ export class ItemSpawner {
     const totalFaults = faults;
 
     const container = this.scene.add.container(
-      width + ITEM.LAYOUT.SPAWN_X_OFFSET,
-      beltTop - ITEM.LAYOUT.Y_OFFSET
+      this.width + this.width * ITEM.LAYOUT.SPAWN_X_OFFSET_PCT,
+      beltTop - itemSize / 2
     ).setDepth(DEPTH.ITEMS);
+
     const bg = this.scene.add.rectangle(
-      0, 0, ITEM.LAYOUT.SIZE, ITEM.LAYOUT.SIZE, ITEM.COLOUR.FILL
+      0, 0, itemSize, itemSize, ITEM.COLOUR.FILL
     ).setStrokeStyle(ITEM.LAYOUT.STROKE_WIDTH, ITEM.COLOUR.STROKE);
     container.add(bg);
 
     const indicators = [];
     for (let i = 0; i < faults; i++) {
-      const y = INDICATOR.LAYOUT.Y_START + (i * INDICATOR.LAYOUT.SPACING);
+      const y = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
       const indicator = this.scene.add.rectangle(
         0, y,
-        INDICATOR.LAYOUT.WIDTH, INDICATOR.LAYOUT.HEIGHT,
+        itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT,
         INDICATOR.COLOUR.FAULT_FILL
       ).setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE);
       container.add(indicator);
       indicators.push(indicator);
     }
 
-    container.setSize(ITEM.LAYOUT.SIZE, ITEM.LAYOUT.SIZE);
-
-    this.items.push({ sprite: container, faults, totalFaults, indicators, minigameType: MINIGAME_TYPES.TEMPLATE });
+    container.setSize(itemSize);
+    this.items.push({ sprite: container, bg, faults, totalFaults, indicators, minigameType: MINIGAME_TYPES.TEMPLATE });
   }
 
   moveItems (beltSpeed, delta) {
+    const { width } = this.scene.scale;
+
     let missedFaults = 0;
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.paused) continue;
-      item.sprite.x -= beltSpeed * this.scene.scale.width * BELT.TUNING.BASE_SCREENS_PER_SEC * (delta / 1000);
-      if (item.sprite.x < ITEM.LAYOUT.DESPAWN_X) {
+      item.sprite.x -= beltSpeed * width * BELT.TUNING.BASE_SCREENS_PER_SEC * (delta / 1000);
+      if (item.sprite.x < width * ITEM.LAYOUT.DESPAWN_X_PCT) {
         missedFaults += item.faults;
         item.sprite.destroy();
         this.items.splice(i, 1);
@@ -87,8 +91,25 @@ export class ItemSpawner {
   }
 
   handleResize (width, height) {
-    const y = height - height * BELT.LAYOUT.HEIGHT_PCT - ITEM.LAYOUT.Y_OFFSET;
-    for (const item of this.items) item.sprite.y = y;
+    const itemSize = width * ITEM.LAYOUT.SIZE_PCT;
+    const beltTop = height - height * BELT.LAYOUT.HEIGHT_PCT;
+    const y = beltTop - itemSize / 2;
+    const oldWidth = this.width ?? width;
+    const xScale = width / oldWidth;
+
+    for (const item of this.items) {
+      item.sprite.x *= xScale;
+      item.sprite.y = y;
+      item.sprite.setSize(itemSize, itemSize);
+      item.bg.setSize(itemSize, itemSize);
+      item.indicators.forEach((ind, i) => {
+        ind.setPosition(0, itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT));
+        ind.setSize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
+      });
+    }
+
+    this.width = width;
+    this.height = height;
   }
 }
 
