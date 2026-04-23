@@ -9,11 +9,13 @@ import { MINIGAME_TYPES } from "./config/MinigameTypes";
 import { TemplateMinigame } from "./minigames/TemplateMinigame";
 import { TapMinigame } from "./minigames/TapMinigame";
 import { PumpMinigame } from "./minigames/PumpMinigame";
+import { DragMinigame } from "./minigames/DragMinigame";
 
 const MINIGAMES = {
   [MINIGAME_TYPES.TEMPLATE]: TemplateMinigame,
   [MINIGAME_TYPES.TAP]: TapMinigame,
   [MINIGAME_TYPES.PUMP]: PumpMinigame,
+  [MINIGAME_TYPES.DRAG]: DragMinigame
 };
 
 export class MinigameManager {
