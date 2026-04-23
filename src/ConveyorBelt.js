@@ -14,7 +14,7 @@ export class ConveyorBelt {
   }
 
   update (beltSpeed, delta) {
-    this.sprite.tilePositionX += beltSpeed * BELT.TUNING.BASE_PX_PER_SEC * (delta / 1000);
+    this.sprite.tilePositionX += beltSpeed * this.scene.scale.width * BELT.TUNING.BASE_SCREENS_PER_SEC * (delta / 1000);
   }
 
   handleResize (width, height) {

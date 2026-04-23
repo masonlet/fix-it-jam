@@ -63,7 +63,7 @@ export class ItemSpawner {
     for (let i = this.items.length - 1; i >= 0; i--) {
       const item = this.items[i];
       if (item.paused) continue;
-      item.sprite.x -= beltSpeed * BELT.TUNING.BASE_PX_PER_SEC * (delta / 1000);
+      item.sprite.x -= beltSpeed * this.scene.scale.width * BELT.TUNING.BASE_SCREENS_PER_SEC * (delta / 1000);
       if (item.sprite.x < ITEM.LAYOUT.DESPAWN_X) {
         missedFaults += item.faults;
         item.sprite.destroy();
