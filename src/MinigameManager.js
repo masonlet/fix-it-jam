@@ -8,10 +8,12 @@ import { MINIGAME_TYPES } from "./config/MinigameTypes";
 
 import { TemplateMinigame } from "./minigames/TemplateMinigame";
 import { TapMinigame } from "./minigames/TapMinigame";
+import { PumpMinigame } from "./minigames/PumpMinigame";
 
 const MINIGAMES = {
   [MINIGAME_TYPES.TEMPLATE]: TemplateMinigame,
   [MINIGAME_TYPES.TAP]: TapMinigame,
+  [MINIGAME_TYPES.PUMP]: PumpMinigame,
 };
 
 export class MinigameManager {

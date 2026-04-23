@@ -1,0 +1,21 @@
+export const PUMP = {
+  TUNING: {
+    REQUIRED_DISTANCE_MULT: 5,
+  },
+  LAYOUT: {
+    TRACK_WIDTH_PCT: 0.1,
+    TRACK_HEIGHT_PCT: 0.35,
+    HANDLE_HEIGHT_PCT: 0.04,
+    BAR_WIDTH_PCT: 0.04,
+    BAR_GAP_PCT: 0.05,
+    STROKE_WIDTH: 2,
+  },
+  COLOUR: {
+    TRACK_FILL: 0x222222,
+    TRACK_STROKE: 0x888888,
+    HANDLE_FILL: 0x888888,
+    HANDLE_STROKE: 0xcccccc,
+    BAR_BG_FILL: 0x222222,
+    BAR_FILL: 0x00cc66,
+  }
+}
