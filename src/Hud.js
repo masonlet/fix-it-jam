@@ -4,6 +4,8 @@ import { COLORS } from "./config/Colors";
 export class Hud {
   constructor (scene) {
     this.scene = scene;
+    this.lives = 0;
+    this.width = scene.scale.width;
     const { width } = scene.scale;
 
     this.livesText = scene.add.text(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y, "", {
@@ -20,7 +22,14 @@ export class Hud {
   }
 
   setLives (lives) {
-    this.livesText.setText("⚡".repeat(lives));
+    this.lives = lives;
+    this.livesText.setText(this.#livesDisplay());
+  }
+
+  #livesDisplay () {
+  return this.width < LAYOUT.HUD_COMPACT_WIDTH
+    ? `⚡ ${this.lives}`
+    : "⚡".repeat(this.lives);
   }
 
   setScore (score) {
@@ -28,7 +37,9 @@ export class Hud {
   }
 
   handleResize (width) {
+    this.width = width;
     this.livesText.setPosition(width * LAYOUT.LIVES_X_PCT, LAYOUT.HUD_Y);
     this.scoreText.setPosition(width * LAYOUT.SCORE_X_PCT, LAYOUT.HUD_Y);
+    this.livesText.setText(this.#livesDisplay());
   }
 }

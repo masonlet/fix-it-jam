@@ -12,6 +12,7 @@ export const DEPTH = {
 export const LAYOUT = {
   BELT_HEIGHT_PCT: 0.15,
   HUD_Y: 20,
+  HUD_COMPACT_WIDTH: 500,
   LIVES_X_PCT: 0.3,
   SCORE_X_PCT: 0.7,
   LIVES_FONT_SIZE: "24px",
