@@ -15,11 +15,17 @@ export class Game extends Scene {
   }
 
   create () {
+    // Audio
     this.audio = new Audio(this);
+
+    //   Gameplay
     this.audio.register("oof", "sfx-oof");
     this.audio.register("click", "sfx-click");
-    this.audio.register("connect", "sfx-connect");
+    this.audio.register("death", "sfx-death");
 
+    //   Minigames
+    this.audio.register("connect", "sfx-connect");
+ 
     // Variables
     this.elapsedTime = 0;
     this.score = 0;
@@ -90,6 +96,7 @@ export class Game extends Scene {
   }
 
   gameOver () {
+    this.audio.play("death");
     this.scene.start("GameOver", {
       score: this.score,
       time: Math.floor(this.elapsedTime)
