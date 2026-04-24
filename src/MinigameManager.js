@@ -42,6 +42,7 @@ export class MinigameManager {
   open (item) {
     const { width, height } = this.scene.scale;
     this.activeItem = item;
+    this.scene.audio.play('click');
     item.paused = true;
 
     // Overlay

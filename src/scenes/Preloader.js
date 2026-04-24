@@ -14,6 +14,7 @@ export class Preloader extends Scene {
   preload () {
     this.load.audio("sfx-button", "assets/audio/button.wav");
     this.load.audio("sfx-oof", "assets/audio/oof.wav");
+    this.load.audio("sfx-click", "assets/audio/click.wav");
 
     const g = this.make.graphics({ x: 0, y: 0, add: false });
     g.fillStyle(0x444444);
