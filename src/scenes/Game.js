@@ -4,6 +4,7 @@ import { ConveyorBelt } from "../ConveyorBelt";
 import { ItemSpawner } from "../ItemSpawner";
 import { MinigameManager } from "../MinigameManager";
 import { Difficulty } from "../Difficulty";
+import { Audio } from "../Audio";
 
 import { GAME } from "../config/Game";
 import { BELT } from "../config/Belt";
@@ -14,6 +15,9 @@ export class Game extends Scene {
   }
 
   create () {
+    this.audio = new Audio(this);
+    this.audio.register("oof", "sfx-oof");
+
     // Variables
     this.elapsedTime = 0;
     this.score = 0;
@@ -72,6 +76,7 @@ export class Game extends Scene {
   }
 
   loseLife (count = 1) {
+    this.audio.play("oof");
     this.lives = Math.max(0, this.lives - count);
     this.hud.setLives(this.lives);
     if (this.lives <= 0) this.gameOver();
