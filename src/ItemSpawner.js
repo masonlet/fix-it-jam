@@ -52,9 +52,8 @@ export class ItemSpawner {
       bg = this.scene.add.image(0, 0, spriteKey)
         .setDisplaySize(itemSize, itemSize);
     } else {
-      bg = this.scene.add.rectangle(
-        0, 0, itemSize, itemSize, ITEM.COLOUR.FILL
-      ).setStrokeStyle(ITEM.LAYOUT.STROKE_WIDTH, ITEM.COLOUR.STROKE);
+      bg = this.scene.add.image(0, 0, "item-background")
+        .setDisplaySize(itemSize, itemSize);
     }
     container.add(bg);
 
@@ -62,11 +61,8 @@ export class ItemSpawner {
     if (!spriteKey){
       for (let i = 0; i < faults; i++) {
         const y = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
-        const indicator = this.scene.add.rectangle(
-          0, y,
-          itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT,
-          INDICATOR.COLOUR.FAULT_FILL
-        ).setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE);
+         const indicator = this.scene.add.image(0, y, "item-fault")
+          .setDisplaySize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
         container.add(indicator);
         indicators.push(indicator);
       }
@@ -118,14 +114,10 @@ export class ItemSpawner {
       item.sprite.x *= xScale;
       item.sprite.y = y;
       item.sprite.setSize(itemSize, itemSize);
-      if (item.bg.setDisplaySize) {
-        item.bg.setDisplaySize(itemSize, itemSize);
-      } else {
-        item.bg.setSize(itemSize, itemSize);
-      }
+      item.bg.setDisplaySize(itemSize, itemSize);
       item.indicators.forEach((ind, i) => {
         ind.setPosition(0, itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT));
-        ind.setSize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
+        ind.setDisplaySize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
       });
     }
 

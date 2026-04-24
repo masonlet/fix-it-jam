@@ -4,5 +4,11 @@ export const TAP = {
     BOX_SIZE_PCT: 0.1,
     BOX_SPACING_PCT: 0.15,
     BOX_STROKE_WIDTH: 2,
+  },
+  COLOUR: {
+    FAULT_FILL: 0xff4444,
+    FAULT_STROKE: 0xcc0000,
+    FIXED_FILL: 0x00cc66,
+    FIXED_STROKE: 0x009944,
   }
 }

@@ -1,15 +1,9 @@
 export const INDICATOR = {
   LAYOUT: {
-    WIDTH_PCT: 0.625,
-    HEIGHT_PCT: 0.175,
+    WIDTH_PCT: 0.95,
+    HEIGHT_PCT: 1,
     SPACING_PCT: 0.25,
     Y_START_PCT: -0.25,
     STROKE_WIDTH: 1,
-  },
-  COLOUR: {
-    FAULT_FILL: 0xff4444,
-    FAULT_STROKE: 0xcc0000,
-    FIXED_FILL: 0x00cc66,
-    FIXED_STROKE: 0x009944,
   }
 }

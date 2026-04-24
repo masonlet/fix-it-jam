@@ -1,6 +1,4 @@
 import { DEPTH } from "../config/Depth";
-import { INDICATOR } from "../config/Indicator";
-
 import { TAP } from "../config/minigames/Tap";
 
 export class TapMinigame {
@@ -20,8 +18,8 @@ export class TapMinigame {
       const box = scene.add.rectangle(
         startX + i * spacing, cy,
         boxSize, boxSize,
-        INDICATOR.COLOUR.FAULT_FILL
-      ).setStrokeStyle(TAP.LAYOUT.BOX_STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE)
+        TAP.COLOUR.FAULT_FILL
+      ).setStrokeStyle(TAP.LAYOUT.BOX_STROKE_WIDTH, TAP.COLOUR.FAULT_STROKE)
        .setDepth(DEPTH.MINIGAME)
        .setInteractive();
 
@@ -33,8 +31,8 @@ export class TapMinigame {
   #hit (box) {
     if (box.fixed) return;
     box.fixed = true;
-    box.setFillStyle(INDICATOR.COLOUR.FIXED_FILL);
-    box.setStrokeStyle(TAP.LAYOUT.BOX_STROKE_WIDTH, INDICATOR.COLOUR.FIXED_STROKE);
+    box.setFillStyle(TAP.COLOUR.FIXED_FILL);
+    box.setStrokeStyle(TAP.LAYOUT.BOX_STROKE_WIDTH, TAP.COLOUR.FIXED_STROKE);
     this.remaining--;
     if (this.remaining <= 0) this.onComplete();
   }
