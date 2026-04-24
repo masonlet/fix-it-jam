@@ -17,16 +17,14 @@ export class DragMinigame {
     this.slotY = cy;
     this.snapTolerance = pieceSize * DRAG.LAYOUT.SNAP_TOLERANCE_PCT;
 
-    this.slot = scene.add.rectangle(
-      this.slotX, this.slotY, slotSize, slotSize, DRAG.COLOUR.SLOT_FILL
-    ).setStrokeStyle(DRAG.LAYOUT.STROKE_WIDTH, DRAG.COLOUR.SLOT_STROKE)
-     .setDepth(DEPTH.MINIGAME);
+    this.slot = scene.add.image(this.slotX, this.slotY, "drag-socket")
+      .setDisplaySize(slotSize, slotSize)
+      .setDepth(DEPTH.MINIGAME);
 
-    this.piece = scene.add.rectangle(
-      this.startX, this.startY, pieceSize, pieceSize, DRAG.COLOUR.PIECE_FILL
-    ).setStrokeStyle(DRAG.LAYOUT.STROKE_WIDTH, DRAG.COLOUR.PIECE_STROKE)
-     .setDepth(DEPTH.MINIGAME)
-     .setInteractive({ draggable: true });
+    this.piece = scene.add.image(this.startX, this.startY, "drag-plug")
+      .setDisplaySize(pieceSize, pieceSize)
+      .setDepth(DEPTH.MINIGAME)
+      .setInteractive({ draggable: true });
 
     scene.input.setDraggable(this.piece);
 
@@ -36,11 +34,9 @@ export class DragMinigame {
       const dx = x - this.slotX;
       const dy = y - this.slotY;
       if (Math.hypot(dx, dy) <= this.snapTolerance) {
-        this.slot.setFillStyle(DRAG.COLOUR.SLOT_HIGHLIGHT_FILL);
-        this.slot.setStrokeStyle(DRAG.LAYOUT.STROKE_WIDTH, DRAG.COLOUR.SLOT_HIGHLIGHT_STROKE);
+        this.slot.setTint(0x00cc66);
       } else {
-        this.slot.setFillStyle(DRAG.COLOUR.SLOT_FILL);
-        this.slot.setStrokeStyle(DRAG.LAYOUT.STROKE_WIDTH, DRAG.COLOUR.SLOT_STROKE);
+        this.slot.clearTint();
       }
     };
     this.onDragEnd = (_, obj) => {
@@ -79,12 +75,12 @@ export class DragMinigame {
     this.slotY = cy;
     this.snapTolerance = pieceSize * DRAG.LAYOUT.SNAP_TOLERANCE_PCT;
 
-    this.slot.setPosition(this.slotX, this.slotY).setSize(slotSize, slotSize);
+    this.slot.setPosition(this.slotX, this.slotY).setDisplaySize(slotSize, slotSize);
     if (this.completed) {
       this.piece.setPosition(this.slotX, this.slotY);
     } else {
       this.piece.setPosition(this.startX, this.startY);
     }
-    this.piece.setSize(pieceSize, pieceSize);
+    this.piece.setDisplaySize(pieceSize, pieceSize);
   }
 }

@@ -3,6 +3,7 @@ import { BELT } from "./config/Belt";
 import { ITEM } from "./config/Item";
 import { GAME } from "./config/Game";
 import { INDICATOR } from "./config/Indicator";
+import { ITEM_SPRITES } from "./config/ItemSprites";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
 const TYPES = Object.values(MINIGAME_TYPES);
 
@@ -40,29 +41,39 @@ export class ItemSpawner {
       beltTop - itemSize / 2
     ).setDepth(DEPTH.ITEMS);
 
-    const bg = this.scene.add.rectangle(
-      0, 0, itemSize, itemSize, ITEM.COLOUR.FILL
-    ).setStrokeStyle(ITEM.LAYOUT.STROKE_WIDTH, ITEM.COLOUR.STROKE);
-    container.add(bg);
-
-    const indicators = [];
-    for (let i = 0; i < faults; i++) {
-      const y = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
-      const indicator = this.scene.add.rectangle(
-        0, y,
-        itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT,
-        INDICATOR.COLOUR.FAULT_FILL
-      ).setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE);
-      container.add(indicator);
-      indicators.push(indicator);
-    }
-
-    container.setSize(itemSize);
-
     const faultTypes = Array.from(
       { length: faults },
       () => Phaser.Math.RND.pick(TYPES)
     );
+
+    const spriteKey = faults === 1 ? ITEM_SPRITES[faultTypes[0]] : null;
+    let bg;
+    if (spriteKey) {
+      bg = this.scene.add.image(0, 0, spriteKey)
+        .setDisplaySize(itemSize, itemSize);
+    } else {
+      bg = this.scene.add.rectangle(
+        0, 0, itemSize, itemSize, ITEM.COLOUR.FILL
+      ).setStrokeStyle(ITEM.LAYOUT.STROKE_WIDTH, ITEM.COLOUR.STROKE);
+    }
+    container.add(bg);
+
+    const indicators = [];
+    if (!spriteKey){
+      for (let i = 0; i < faults; i++) {
+        const y = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
+        const indicator = this.scene.add.rectangle(
+          0, y,
+          itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT,
+          INDICATOR.COLOUR.FAULT_FILL
+        ).setStrokeStyle(INDICATOR.LAYOUT.STROKE_WIDTH, INDICATOR.COLOUR.FAULT_STROKE);
+        container.add(indicator);
+        indicators.push(indicator);
+      }
+    }
+
+    container.setSize(itemSize);
+
     this.items.push({ sprite: container, bg, faults, totalFaults, indicators, faultTypes });
   }
 
@@ -107,7 +118,11 @@ export class ItemSpawner {
       item.sprite.x *= xScale;
       item.sprite.y = y;
       item.sprite.setSize(itemSize, itemSize);
-      item.bg.setSize(itemSize, itemSize);
+      if (item.bg.setDisplaySize) {
+        item.bg.setDisplaySize(itemSize, itemSize);
+      } else {
+        item.bg.setSize(itemSize, itemSize);
+      }
       item.indicators.forEach((ind, i) => {
         ind.setPosition(0, itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT));
         ind.setSize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);

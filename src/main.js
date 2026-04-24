@@ -19,7 +19,8 @@ const config = {
     MainMenu,
     Game,
     GameOver
-  ]
+  ],
+  pixelArt: true,
 };
 
 YouTubePlayables.boot(() => {
