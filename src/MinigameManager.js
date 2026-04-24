@@ -125,7 +125,7 @@ export class MinigameManager {
 
   fail () {
     if (!this.activeItem) return;
-
+    this.scene.audio.play("fail");
     this.activeItem.paused = false;
     this.close();
   }

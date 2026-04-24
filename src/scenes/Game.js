@@ -24,6 +24,7 @@ export class Game extends Scene {
     this.audio.register("death", "sfx-death");
 
     //   Minigames
+    this.audio.register("fail", "sfx-fail");
     this.audio.register("connect", "sfx-connect");
  
     // Variables

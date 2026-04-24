@@ -16,6 +16,7 @@ export class Preloader extends Scene {
     this.load.audio("sfx-oof", "assets/audio/oof.wav");
     this.load.audio("sfx-click", "assets/audio/click.wav");
     this.load.audio("sfx-death", "assets/audio/death.wav");
+    this.load.audio("sfx-fail", "assets/audio/minigames/fail.wav");
     this.load.audio("sfx-connect", "assets/audio/minigames/drag/connect.wav");
 
     const g = this.make.graphics({ x: 0, y: 0, add: false });
