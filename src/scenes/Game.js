@@ -18,6 +18,7 @@ export class Game extends Scene {
     this.audio = new Audio(this);
     this.audio.register("oof", "sfx-oof");
     this.audio.register("click", "sfx-click");
+    this.audio.register("connect", "sfx-connect");
 
     // Variables
     this.elapsedTime = 0;

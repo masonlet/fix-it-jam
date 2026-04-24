@@ -46,6 +46,7 @@ export class DragMinigame {
       if (Math.hypot(dx, dy) <= this.snapTolerance) {
         this.completed = true;
         this.piece.setPosition(this.slotX, this.slotY);
+        this.scene.audio.play("connect");
         this.onComplete();
       } else {
         this.piece.setPosition(this.startX, this.startY);
