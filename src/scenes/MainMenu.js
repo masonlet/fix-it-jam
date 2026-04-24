@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { YouTubePlayables } from "../YouTubePlayables";
+import { Audio } from "../Audio";
 
 export class MainMenu extends Scene {
   constructor () {
@@ -7,6 +8,9 @@ export class MainMenu extends Scene {
   }
 
   create () {
+    this.audio = new Audio(this);
+    this.audio.register("button", "sfx-button");
+
      const { width, height } = this.scale;
 
     // Title
@@ -43,6 +47,7 @@ export class MainMenu extends Scene {
     });
 
     this.input.on("pointerdown", () => {
+      this.audio.play("button");
       this.scene.start("Game");
     });
 

@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { YouTubePlayables } from '../YouTubePlayables';
+import { Audio } from '../Audio';
 
 export class GameOver extends Scene {
   constructor () {
@@ -7,6 +8,9 @@ export class GameOver extends Scene {
   }
 
   create (data = {}) {
+    this.audio = new Audio(this);
+    this.audio.register("button", "sfx-button");
+
     const score = data.score || 0;
     const time = data.time || 0;
     const highScore = this.registry.get("highScore") || 0;
@@ -64,6 +68,7 @@ export class GameOver extends Scene {
     playBtn.on('pointerover', () => playBtn.setColor('#00ff88'));
     playBtn.on('pointerout', () => playBtn.setColor('#00cc66'));
     playBtn.on('pointerdown', () => {
+      this.audio.play("button");
       this.scene.start('Game');
     });
 
@@ -77,6 +82,7 @@ export class GameOver extends Scene {
     menuBtn.on('pointerover', () => menuBtn.setColor('#bbbbbb'));
     menuBtn.on('pointerout', () => menuBtn.setColor('#888888'));
     menuBtn.on('pointerdown', () => {
+      this.audio.play("button");
       this.scene.start('MainMenu');
     });
 
