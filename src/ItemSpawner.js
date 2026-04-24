@@ -58,10 +58,12 @@ export class ItemSpawner {
     }
 
     container.setSize(itemSize);
-    this.items.push({
-      sprite: container, bg, faults, totalFaults, indicators,
-      minigameType: Phaser.Math.RND.pick(TYPES)
-    });
+
+    const faultTypes = Array.from(
+      { length: faults },
+      () => Phaser.Math.RND.pick(TYPES)
+    );
+    this.items.push({ sprite: container, bg, faults, totalFaults, indicators, faultTypes });
   }
 
   moveItems (beltSpeed, delta) {

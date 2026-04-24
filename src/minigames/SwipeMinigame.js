@@ -17,7 +17,7 @@ export class SwipeMinigame {
     this.cubeSize = width * SWIPE.LAYOUT.CUBE_SIZE_PCT;
     this.arrowSize = width * SWIPE.LAYOUT.ARROW_SIZE_PCT;
     this.threshold = height * SWIPE.TUNING.SWIPE_THRESHOLD_PCT;
-    this.greenStartY = height; // below screen
+    this.greenStartY = height * 0.9;
 
     this.#spawnRed();
 
@@ -54,7 +54,7 @@ export class SwipeMinigame {
     this.pieceOffset = 0;
     this.arrowsVisible = true;
 
-    this.arrows = this.#drawArrows(this.cx, this.greenStartY - this.cubeSize / 2 - this.arrowSize, -1, SWIPE.COLOUR.FIXED_ARROW);
+    this.arrows = this.#drawArrows(this.cx, this.greenStartY - this.cubeSize / 2, -1, SWIPE.COLOUR.FIXED_ARROW);
     this.arrowBounceTween = this.#startBounce(this.arrows, -1);
   }
 

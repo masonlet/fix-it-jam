@@ -76,8 +76,9 @@ export class MinigameManager {
     ).setOrigin(0, 0.5).setDepth(DEPTH.TIMER_BAR);
 
     // Minigame
-    const MinigameClass = MINIGAMES[item.minigameType];
-    if (!MinigameClass) throw new Error("Invalid or empty minigame")
+    const minigameType = item.faultTypes[item.totalFaults - item.faults];
+    const MinigameClass = MINIGAMES[minigameType];
+    if (!MinigameClass) throw new Error("Invalid minigame type");
     this.currentMinigame = new MinigameClass(
       this.scene,
       width / 2, height / 2,

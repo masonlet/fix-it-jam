@@ -5,7 +5,10 @@ import { MINIGAME } from "./config/Minigame";
 export class Difficulty {
   update (elapsedTime) {
     return {
-      beltSpeed: BELT.TUNING.SPEED_BASE + elapsedTime * BELT.TUNING.SPEED_RAMP_PER_SEC,
+      beltSpeed: Math.max(
+        BELT.TUNING.SPEED_MIN,
+        BELT.TUNING.SPEED_BASE + elapsedTime * BELT.TUNING.SPEED_RAMP_PER_SEC
+      ),
       spawnInterval: Math.max(
         GAME.TUNING.SPAWN_INTERVAL_MIN,
         GAME.TUNING.SPAWN_INTERVAL_START - elapsedTime * GAME.TUNING.SPAWN_INTERVAL_RAMP_PER_SEC
