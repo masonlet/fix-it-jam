@@ -24,5 +24,14 @@ const config = {
 };
 
 YouTubePlayables.boot(() => {
-  new Phaser.Game(config);
+  const game = new Phaser.Game(config);
+
+  const applyAudioState = (enabled) => {
+    game.sound.mute = !enabled;
+  }
+
+  applyAudioState(YouTubePlayables.isAudioEnabled());
+  YouTubePlayables.setAudioChangeCallback(applyAudioState);
+
+  return game;
 });
