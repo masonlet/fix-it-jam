@@ -25,7 +25,9 @@ export class Game extends Scene {
 
     //   Minigames
     this.audio.register("fail", "sfx-fail");
-    this.audio.register("connect", "sfx-connect");
+    this.audio.register("drag-connect", "sfx-drag-connect");
+    this.audio.register("tap-button", "sfx-tap-button");
+    this.audio.register("tap-complete", "sfx-tap-complete");
  
     // Variables
     this.elapsedTime = 0;

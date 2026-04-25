@@ -1,7 +1,7 @@
 export const MINIGAME_TYPES = {
   TAP: "tap",
-  PUMP: "pump",
   DRAG: "drag",
+  PUMP: "pump",
   SPIN: "spin",
   SWIPE: "swipe",
   TIMING: "timing",

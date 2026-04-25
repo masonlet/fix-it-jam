@@ -50,14 +50,6 @@ export class MinigameManager {
       POPUP.COLOUR.OVERLAY_FILL, POPUP.COLOUR.OVERLAY_ALPHA
     ).setDepth(DEPTH.OVERLAY);
 
-    // Popup
-    this.popup = this.scene.add.rectangle(
-      width / 2, height / 2,
-      width * POPUP.LAYOUT.WIDTH_PCT, height * POPUP.LAYOUT.HEIGHT_PCT,
-      POPUP.COLOUR.FILL
-    ).setDepth(DEPTH.POPUP)
-     .setStrokeStyle(POPUP.LAYOUT.STROKE_WIDTH, POPUP.COLOUR.STROKE);
-
     // Timer
     const barWidth = width * TIMER.LAYOUT.BAR_WIDTH_PCT;
     const barHeight = height * TIMER.LAYOUT.BAR_HEIGHT_PCT;
@@ -79,6 +71,16 @@ export class MinigameManager {
     const minigameType = item.faultTypes[item.totalFaults - item.faults];
     const MinigameClass = MINIGAMES[minigameType];
     if (!MinigameClass) throw new Error("Invalid minigame type");
+    if (MinigameClass.useDefaultPopup !== false) {
+      // Popup
+      this.popup = this.scene.add.rectangle(
+        width / 2, height / 2,
+        width * POPUP.LAYOUT.WIDTH_PCT, height * POPUP.LAYOUT.HEIGHT_PCT,
+        POPUP.COLOUR.FILL
+      ).setDepth(DEPTH.POPUP)
+      .setStrokeStyle(POPUP.LAYOUT.STROKE_WIDTH, POPUP.COLOUR.STROKE);
+    }
+
     this.currentMinigame = new MinigameClass(
       this.scene,
       width / 2, height / 2,
@@ -132,7 +134,8 @@ export class MinigameManager {
 
   close () {
     this.overlay.destroy();
-    this.popup.destroy();
+    this.popup?.destroy();
+    this.popup = null;
     this.timerBarBg.destroy();
     this.timerBar.destroy();
     this.activeItem = null;
@@ -148,7 +151,7 @@ export class MinigameManager {
     const barHeight = height * TIMER.LAYOUT.BAR_HEIGHT_PCT;
     const barYOffset = height * TIMER.LAYOUT.BAR_Y_OFFSET_PCT;
     this.overlay.setPosition(width / 2, height / 2).setSize(width, height);
-    this.popup.setPosition(width / 2, height / 2).setSize(
+    this.popup?.setPosition(width / 2, height / 2).setSize(
       width * POPUP.LAYOUT.WIDTH_PCT, height * POPUP.LAYOUT.HEIGHT_PCT
     );
     this.timerBarBg.setPosition(width / 2, height - barYOffset).setSize(barWidth, barHeight);
