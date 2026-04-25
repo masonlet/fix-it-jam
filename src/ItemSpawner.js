@@ -61,10 +61,18 @@ export class ItemSpawner {
     if (!spriteKey){
       for (let i = 0; i < faults; i++) {
         const y = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
-         const indicator = this.scene.add.image(0, y, "item-fault")
-          .setDisplaySize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
-        container.add(indicator);
-        indicators.push(indicator);
+        const indWidth = itemSize * INDICATOR.LAYOUT.WIDTH_PCT;
+        const indHeight = itemSize * INDICATOR.LAYOUT.HEIGHT_PCT;
+        
+        const insert = this.scene.add.image(0, y, "rectangle-insert")
+          .setDisplaySize(indWidth, indHeight)
+          .setTint(INDICATOR.COLOUR.FAULT);
+        const border = this.scene.add.image(0, y, "rectangle-border")
+          .setDisplaySize(indWidth, indHeight);
+        
+        container.add(insert);
+        container.add(border);
+        indicators.push({insert, border});
       }
     }
 
@@ -116,8 +124,11 @@ export class ItemSpawner {
       item.sprite.setSize(itemSize, itemSize);
       item.bg.setDisplaySize(itemSize, itemSize);
       item.indicators.forEach((ind, i) => {
-        ind.setPosition(0, itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT));
-        ind.setDisplaySize(itemSize * INDICATOR.LAYOUT.WIDTH_PCT, itemSize * INDICATOR.LAYOUT.HEIGHT_PCT);
+        const yPos = itemSize * INDICATOR.LAYOUT.Y_START_PCT + (i * itemSize * INDICATOR.LAYOUT.SPACING_PCT);
+        const indWidth = itemSize * INDICATOR.LAYOUT.WIDTH_PCT;
+        const indHeight = itemSize * INDICATOR.LAYOUT.HEIGHT_PCT;
+        ind.insert.setPosition(0, yPos).setDisplaySize(indWidth, indHeight);
+        ind.border.setPosition(0, yPos).setDisplaySize(indWidth, indHeight);
       });
     }
 

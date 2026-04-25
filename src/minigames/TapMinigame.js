@@ -1,11 +1,12 @@
 import { DEPTH } from "../config/Depth";
+import { INDICATOR } from "../config/Indicator";
 
 const LAYOUT = {
   BOX_COUNT: 3,
-  BOX_SIZE_PCT: 0.1,
+  BOX_SIZE_PCT: 0.095,
   BOX_SPACING_PCT: 0.15,
   BG_SIZE_PCT: 0.5,
-  BUTTON_Y_OFFSET_PCT: 0.2,
+  BUTTON_Y_OFFSET_PCT: 0.15,
 }
 
 export class TapMinigame {
@@ -30,20 +31,25 @@ export class TapMinigame {
 
     this.boxes = [];
     for (let i = 0; i < LAYOUT.BOX_COUNT; i++) {
-      const box = scene.add.image(startX + i * spacing, buttonY, "tap-fault")
+      const x = startX + i * spacing;
+      const insert = scene.add.image(x, buttonY, "square-insert")
         .setDisplaySize(boxSize, boxSize)
+        .setTint(INDICATOR.COLOUR.FAULT)
         .setDepth(DEPTH.MINIGAME)
         .setInteractive();
+      const border = scene.add.image(x, buttonY, "square-border")
+        .setDisplaySize(boxSize, boxSize)
+        .setDepth(DEPTH.MINIGAME);
 
-      box.on("pointerdown", () => this.#hit(box));
-      this.boxes.push(box);
+      insert.on("pointerdown", () => this.#hit(insert));
+      this.boxes.push({ insert, border });
     }
   }
 
-  #hit (box) {
-    if (box.fixed) return;
-    box.fixed = true;
-    box.setTexture("tap-fixed");
+  #hit (insert) {
+    if (insert.fixed) return;
+    insert.fixed = true;
+    insert.setTint(INDICATOR.COLOUR.FIXED);
     this.scene.audio.play("tap-button");
     this.remaining--;
     if (this.remaining <= 0) {
@@ -54,7 +60,10 @@ export class TapMinigame {
 
   destroy () {
     this.bg.destroy();
-    this.boxes.forEach(b => b.destroy());
+    this.boxes.forEach(b => {
+      b.insert.destroy();
+      b.border.destroy();
+    });
   }
 
   onResize (width, height) {
@@ -68,9 +77,10 @@ export class TapMinigame {
     const buttonY = cy + bgSize * LAYOUT.BUTTON_Y_OFFSET_PCT;
     
     this.bg.setPosition(cx, cy).setDisplaySize(bgSize, bgSize);
-    this.boxes.forEach((box, i) => {
-      box.setPosition(startX + i * spacing, buttonY);
-      box.setDisplaySize(boxSize, boxSize);
+    this.boxes.forEach((b, i) => {
+      const x = startX + i * spacing;
+      b.insert.setPosition(x, buttonY).setDisplaySize(boxSize, boxSize);
+      b.border.setPosition(x, buttonY).setDisplaySize(boxSize, boxSize);
     });
   }
 }

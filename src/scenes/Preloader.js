@@ -34,24 +34,21 @@ export class Preloader extends Scene {
     g.destroy();
 
     // Images
-    //   Default
     this.load.image("item-background", "assets/items/background.png");
-    this.load.image("item-fault", "assets/items/fault.png");
-    this.load.image("item-fixed", "assets/items/fixed.png");
+    this.load.image("rectangle-border", "assets/items/rectangle-border.png");
+    this.load.image("rectangle-insert", "assets/items/rectangle-insert.png");
+    this.load.image("square-border", "assets/items/square-border.png");
+    this.load.image("square-insert", "assets/items/square-insert.png");
 
     //   Items
     this.load.image("item-toaster", "assets/items/toaster.png");
     this.load.image("item-walkie", "assets/items/walkie.png");
     this.load.image("item-tire", "assets/items/tire.png");
 
-    //   Drag
+    //   Minigames
     this.load.image("drag-plug", "assets/minigames/drag/plug.png");
     this.load.image("drag-socket", "assets/minigames/drag/socket.png");
-    
-    //    Tap
     this.load.image("tap-walkie", "assets/minigames/tap/walkie-close.png");
-    this.load.image("tap-fault", "assets/minigames/tap/button-fault.png");
-    this.load.image("tap-fixed", "assets/minigames/tap/button-fixed.png");
   }
 
   create () {

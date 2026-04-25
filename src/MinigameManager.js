@@ -1,6 +1,7 @@
 import { DEPTH } from "./config/Depth";
 import { POPUP } from "./config/Popup";
 import { TIMER } from "./config/Timer";
+import { INDICATOR } from "./config/Indicator";
 
 import { MINIGAME } from "./config/Minigame";
 import { MINIGAME_TYPES } from "./config/MinigameTypes";
@@ -115,7 +116,7 @@ export class MinigameManager {
     item.faults--;
 
     const fixedIndex = item.totalFaults - item.faults - 1;
-    if (item.indicators[fixedIndex]) item.indicators[fixedIndex].setTexture("item-fixed");
+    if (item.indicators[fixedIndex]) item.indicators[fixedIndex].insert.setTint(INDICATOR.COLOUR.FIXED);
 
     const result = { fixed: true, complete: item.faults <= 0, item };
     if (!result.complete) item.paused = false;
