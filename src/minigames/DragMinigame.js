@@ -1,21 +1,24 @@
 import { DEPTH } from "../config/Depth";
 
 const LAYOUT = {
+  BG_SIZE_PCT: 0.5,
   PIECE_SIZE_PCT: 0.1,
   SLOT_SIZE_PCT: 0.12,
   START_OFFSET_X_PCT: -0.15,
   SLOT_OFFSET_X_PCT: 0.15,
-  STROKE_WIDTH: 2,
   SNAP_TOLERANCE_PCT: 0.5,
 }
 
 export class DragMinigame {
+  static useDefaultPopup = false;
+  
   constructor (scene, cx, cy, onComplete) {
     this.scene = scene;
     this.onComplete = onComplete;
     this.completed = false;
 
     const { width } = scene.scale;
+    const bgSize = width * LAYOUT.BG_SIZE_PCT;
     const pieceSize = width * LAYOUT.PIECE_SIZE_PCT;
     const slotSize = width * LAYOUT.SLOT_SIZE_PCT;
 
@@ -24,6 +27,10 @@ export class DragMinigame {
     this.slotX = cx + width * LAYOUT.SLOT_OFFSET_X_PCT;
     this.slotY = cy;
     this.snapTolerance = pieceSize * LAYOUT.SNAP_TOLERANCE_PCT;
+
+    this.bg = scene.add.image(cx, cy, "drag-background")
+      .setDisplaySize(bgSize, bgSize)
+      .setDepth(DEPTH.MINIGAME);
 
     this.slot = scene.add.image(this.slotX, this.slotY, "drag-socket")
       .setDisplaySize(slotSize, slotSize)
@@ -68,6 +75,7 @@ export class DragMinigame {
   destroy () {
     this.scene.input.off("drag", this.onDrag);
     this.scene.input.off("dragend", this.onDragEnd);
+    this.bg.destroy();
     this.piece.destroy();
     this.slot.destroy();
   }
@@ -75,6 +83,7 @@ export class DragMinigame {
   onResize (width, height) {
     const cx = width / 2;
     const cy = height / 2;
+    const bgSize = width * LAYOUT.BG_SIZE_PCT;
     const pieceSize = width * LAYOUT.PIECE_SIZE_PCT;
     const slotSize = width * LAYOUT.SLOT_SIZE_PCT;
 
@@ -84,6 +93,7 @@ export class DragMinigame {
     this.slotY = cy;
     this.snapTolerance = pieceSize * LAYOUT.SNAP_TOLERANCE_PCT;
 
+    this.bg.setPosition(cx, cy).setDisplaySize(bgSize, bgSize);
     this.slot.setPosition(this.slotX, this.slotY).setDisplaySize(slotSize, slotSize);
     if (this.completed) {
       this.piece.setPosition(this.slotX, this.slotY);
