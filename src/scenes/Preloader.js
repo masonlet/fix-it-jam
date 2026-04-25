@@ -24,23 +24,16 @@ export class Preloader extends Scene {
     this.load.audio("sfx-tap-complete", "assets/audio/minigames/tap/complete.wav");
     this.load.audio("sfx-tap-button", "assets/audio/minigames/tap/button.wav");
 
-    // Belt
-    const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x444444);
-    g.fillRect(0, 0, 64, 64);
-    g.fillStyle(0x555555);
-    g.fillRect(0, 0, 32, 64);
-    g.generateTexture("belt-tile", 64, 64);
-    g.destroy();
-
     // Images
-    this.load.image("item-background", "assets/items/background.png");
-    this.load.image("rectangle-border", "assets/items/rectangle-border.png");
-    this.load.image("rectangle-insert", "assets/items/rectangle-insert.png");
-    this.load.image("square-border", "assets/items/square-border.png");
-    this.load.image("square-insert", "assets/items/square-insert.png");
+    //   Game
+    this.load.image("belt-tile", "assets/game/belt.png");
+    this.load.image("rectangle-border", "assets/game/rectangle-border.png");
+    this.load.image("rectangle-insert", "assets/game/rectangle-insert.png");
+    this.load.image("square-border", "assets/game/square-border.png");
+    this.load.image("square-insert", "assets/game/square-insert.png");
 
     //   Items
+    this.load.image("item-background", "assets/items/background.png");
     this.load.image("item-toaster", "assets/items/toaster.png");
     this.load.image("item-walkie", "assets/items/walkie.png");
     this.load.image("item-tire", "assets/items/tire.png");
