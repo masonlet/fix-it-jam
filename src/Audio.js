@@ -16,4 +16,8 @@ export class Audio {
   stop (key) {
     this.sounds[key]?.stop();
   }
+
+  stopAll () {
+    Object.values(this.sounds).forEach(s => s.stop());
+  }
 }

@@ -9,7 +9,9 @@ export class GameOver extends Scene {
 
   create (data = {}) {
     this.audio = new Audio(this);
+    this.audio.register("death", "sfx-death");
     this.audio.register("button", "sfx-button");
+    this.audio.play("death");
 
     const score = data.score || 0;
     const time = data.time || 0;
