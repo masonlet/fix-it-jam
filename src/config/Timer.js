@@ -2,7 +2,7 @@ export const TIMER = {
   LAYOUT: {
     BAR_WIDTH_PCT: 0.6,
     BAR_HEIGHT_PCT: 0.02,
-    BAR_Y_OFFSET_PCT: 0.03,
+    BAR_Y_OFFSET_PCT: 0.06,
     BAR_STROKE_WIDTH: 2,
   },
   COLOUR: {
