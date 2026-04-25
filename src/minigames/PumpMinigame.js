@@ -136,7 +136,10 @@ export class PumpMinigame {
       this.pumpedDistance += clampedY - this.lastHandleY;
       const pct = Math.min(1, this.pumpedDistance / this.requiredDistance);
       this.bar.displayHeight = this.pumpHeight * LAYOUT.BAR_INSET_PCT * pct;
-      if (pct >= 1) this.onComplete();
+      if (pct >= 1) {
+        this.scene.audio.play("pump-complete");
+        this.onComplete();
+      }
     }
   
     this.handleInsert.y = clampedY;
