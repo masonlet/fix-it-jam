@@ -44,6 +44,7 @@ export class Preloader extends Scene {
     this.load.image("item-tire", "assets/items/tire.png");
     this.load.image("item-pipe", "assets/items/pipe.png");
     this.load.image("item-light", "assets/items/light.png");
+    this.load.image("item-gauge", "assets/items/gauge.png");
 
     //   Minigames
     this.load.image("drag-plug", "assets/minigames/drag/plug.png");
@@ -55,6 +56,7 @@ export class Preloader extends Scene {
     this.load.image("swipe-light", "assets/minigames/swipe/light.png");
     this.load.image("swipe-bulb", "assets/minigames/swipe/bulb.png");
     this.load.image("swipe-bulb-insert", "assets/minigames/swipe/bulb-insert.png");
+    this.load.image("timing-gauge", "assets/minigames/timing/gauge.png");
   }
 
   create () {

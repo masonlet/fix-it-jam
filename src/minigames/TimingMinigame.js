@@ -1,12 +1,12 @@
 import { DEPTH } from "../config/Depth";
 
 const LAYOUT = {
+  GAUGE_SIZE_MULT: 2.4,
   RADIUS_PCT: 0.18,
   THICKNESS_PCT: 0.015,
   NEEDLE_LENGTH_PCT: 0.16,
   NEEDLE_WIDTH_PCT: 0.01,
   ZONE_ARC_DEG: 60,
-  STROKE_WIDTH: 2,
 }
 const TUNING = {
   HITS_REQUIRED: 3,
@@ -16,12 +16,13 @@ const TUNING = {
   ARC_SWEEP_DEG: 360,
 }
 const COLOUR = {
-  ARC_BG: 0x222222,
   ZONE_FILL: 0x00cc66,
   NEEDLE_FILL: 0xffffff,
 }
 
 export class TimingMinigame {
+  static useDefaultPopup = false;
+
   constructor (scene, cx, cy, onComplete, onFail) {
     this.scene = scene;
     this.onComplete = onComplete;
@@ -49,7 +50,13 @@ export class TimingMinigame {
     this.zones = this.#generateZones();
     this.zonesCleared = this.zones.map(() => false);
 
-    // Draw background arc + zones
+    // Gauge background
+    const gaugeSize = this.radius * LAYOUT.GAUGE_SIZE_MULT;
+    this.gauge = scene.add.image(cx, cy, "timing-gauge")
+      .setDisplaySize(gaugeSize, gaugeSize)
+      .setDepth(DEPTH.MINIGAME);
+
+    // Green zone arcs
     this.graphics = scene.add.graphics().setDepth(DEPTH.MINIGAME);
     this.#redraw();
 
@@ -85,17 +92,6 @@ export class TimingMinigame {
 
   #redraw () {
     this.graphics.clear();
-
-    // Background arc
-    this.graphics.lineStyle(this.thickness, COLOUR.ARC_BG);
-    this.graphics.beginPath();
-    this.graphics.arc(this.cx, this.cy, this.radius,
-      Phaser.Math.DegToRad(this.arcStart),
-      Phaser.Math.DegToRad(this.arcEnd),
-      false);
-    this.graphics.strokePath();
-
-    // Green zones
     this.graphics.lineStyle(this.thickness, COLOUR.ZONE_FILL);
     this.zones.forEach((z, i) => {
       if (this.zonesCleared[i]) return;
@@ -148,6 +144,7 @@ export class TimingMinigame {
 
   destroy () {
     this.scene.input.off("pointerdown", this.onPointerDown);
+    this.gauge.destroy();
     this.graphics.destroy();
     this.needle.destroy();
   }
@@ -159,6 +156,9 @@ export class TimingMinigame {
     this.thickness = width * LAYOUT.THICKNESS_PCT;
     this.needleLength = width * LAYOUT.NEEDLE_LENGTH_PCT;
     this.needleWidth = width * LAYOUT.NEEDLE_WIDTH_PCT;
+
+    const gaugeSize = this.radius * LAYOUT.GAUGE_SIZE_MULT;
+    this.gauge.setPosition(this.cx, this.cy).setDisplaySize(gaugeSize, gaugeSize);
     this.needle.setPosition(this.cx, this.cy).setSize(this.needleWidth, this.needleLength);
     this.#redraw();
   }
