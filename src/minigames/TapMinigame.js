@@ -2,10 +2,14 @@ import { DEPTH } from "../config/Depth";
 import { INDICATOR } from "../config/Indicator";
 
 const LAYOUT = {
+  NARROW_WIDTH: 650,
   BOX_COUNT: 3,
-  BOX_SIZE_PCT: 0.095,
-  BOX_SPACING_PCT: 0.15,
-  BG_SIZE_PCT: 0.5,
+  BOX_SIZE_PCT: 0.085,
+  BOX_SIZE_PCT_NARROW: 0.15,
+  BOX_SPACING_PCT: 0.10,
+  BOX_SPACING_PCT_NARROW: 0.18,
+  BG_SIZE_PCT: 0.4,
+  BG_SIZE_PCT_NARROW: 0.7,
   BUTTON_Y_OFFSET_PCT: 0.15,
 }
 
@@ -18,9 +22,7 @@ export class TapMinigame {
     this.remaining = LAYOUT.BOX_COUNT;
 
     const width = scene.scale.width;
-    const bgSize = width * LAYOUT.BG_SIZE_PCT;
-    const boxSize = width * LAYOUT.BOX_SIZE_PCT;
-    const spacing = width * LAYOUT.BOX_SPACING_PCT;
+    const { bgSize, boxSize, spacing } = this.#computeSizes(width);
     const totalWidth = spacing * (LAYOUT.BOX_COUNT - 1);
     const startX = cx - totalWidth / 2;
     const buttonY = cy + bgSize * LAYOUT.BUTTON_Y_OFFSET_PCT;
@@ -69,9 +71,7 @@ export class TapMinigame {
   onResize (width, height) {
     const cx = width / 2;
     const cy = height / 2;
-    const bgSize = width * LAYOUT.BG_SIZE_PCT;
-    const boxSize = width * LAYOUT.BOX_SIZE_PCT;
-    const spacing = width * LAYOUT.BOX_SPACING_PCT;
+    const { bgSize, boxSize, spacing } = this.#computeSizes(width);
     const totalWidth = spacing * (LAYOUT.BOX_COUNT - 1);
     const startX = cx - totalWidth / 2;
     const buttonY = cy + bgSize * LAYOUT.BUTTON_Y_OFFSET_PCT;
@@ -82,5 +82,14 @@ export class TapMinigame {
       b.insert.setPosition(x, buttonY).setDisplaySize(boxSize, boxSize);
       b.border.setPosition(x, buttonY).setDisplaySize(boxSize, boxSize);
     });
+  }
+
+  #computeSizes (width) {
+    const narrow = width < LAYOUT.NARROW_WIDTH;
+    return {
+      bgSize: width * (narrow ? LAYOUT.BG_SIZE_PCT_NARROW : LAYOUT.BG_SIZE_PCT),
+      boxSize: width * (narrow ? LAYOUT.BOX_SIZE_PCT_NARROW : LAYOUT.BOX_SIZE_PCT),
+      spacing: width * (narrow ? LAYOUT.BOX_SPACING_PCT_NARROW : LAYOUT.BOX_SPACING_PCT),
+    };
   }
 }
