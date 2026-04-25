@@ -114,6 +114,7 @@ export class TimingMinigame {
   }
 
   #handleTap () {
+    this.scene.audio.play("timing-click");
     const half = LAYOUT.ZONE_ARC_DEG / 2;
     let hitIndex = -1;
     this.zones.forEach((z, i) => {
