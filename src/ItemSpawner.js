@@ -27,7 +27,7 @@ export class ItemSpawner {
 
   spawn  (elapsedTime) {
     const beltTop = this.height - (this.height * BELT.LAYOUT.HEIGHT_PCT);
-    const itemSize = this.width * ITEM.LAYOUT.SIZE_PCT;
+    const itemSize = this.#computeItemSize(this.width);
 
     let maxFaults = 1;
     if      (elapsedTime > GAME.TUNING.FAULTS_TIER_3_AT) maxFaults = 3;
@@ -112,7 +112,7 @@ export class ItemSpawner {
   }
 
   handleResize (width, height) {
-    const itemSize = width * ITEM.LAYOUT.SIZE_PCT;
+    const itemSize = this.#computeItemSize(width);
     const beltTop = height - height * BELT.LAYOUT.HEIGHT_PCT;
     const y = beltTop - itemSize / 2;
     const oldWidth = this.width ?? width;
@@ -134,6 +134,11 @@ export class ItemSpawner {
 
     this.width = width;
     this.height = height;
+  }
+
+  #computeItemSize (width) {
+    const narrow = width < ITEM.LAYOUT.NARROW_WIDTH;
+    return width * (narrow ? ITEM.LAYOUT.SIZE_PCT_NARROW : ITEM.LAYOUT.SIZE_PCT);
   }
 }
 
