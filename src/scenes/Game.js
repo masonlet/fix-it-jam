@@ -61,6 +61,8 @@ export class Game extends Scene {
     
     // Resizing
     this.scale.on("resize", this.handleResize, this);
+
+    this.events.once("shutdown", this.shutdown, this);
   }
 
   update (time, delta) {

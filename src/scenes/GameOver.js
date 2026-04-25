@@ -15,7 +15,6 @@ export class GameOver extends Scene {
     const time = data.time || 0;
     const highScore = this.registry.get("highScore") || 0;
     const isNewHigh = score > highScore;
-
     if (isNewHigh) this.registry.set("highScore", score);
  
     YouTubePlayables.sendScore(score);
@@ -25,83 +24,67 @@ export class GameOver extends Scene {
 
     const { width, height } = this.scale;
 
-    // Game Over
-    this.add.text(width / 2, height * 0.2, 'GAME OVER', {
-      fontFamily: 'Arial',
-      fontSize: '40px',
-      color: '#ff4444',
-      fontStyle: 'bold'
+    this.gameOverText = this.add.text(width / 2, height * 0.2, 'GAME OVER', {
+      fontFamily: 'Arial', fontSize: '40px',
+      color: '#ff4444', fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    // Score
-    this.add.text(width / 2, height * 0.35, `Score: ${score}`, {
-      fontFamily: 'Arial',
-      fontSize: '28px',
+    this.scoreText = this.add.text(width / 2, height * 0.35, `Score: ${score}`, {
+      fontFamily: 'Arial', fontSize: '28px',
       color: '#ffffff'
     }).setOrigin(0.5);
 
-    // Time survived
-    this.add.text(width / 2, height * 0.45, `Time: ${time}s`, {
-      fontFamily: 'Arial',
-      fontSize: '20px',
+    this.timeText = this.add.text(width / 2, height * 0.45, `Time: ${time}s`, {
+      fontFamily: 'Arial', fontSize: '20px',
       color: '#aaaaaa'
     }).setOrigin(0.5);
 
-    // New high score
     if (isNewHigh) {
-      this.add.text(width / 2, height * 0.55, 'NEW HIGH SCORE!', {
-        fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#ffcc00',
-        fontStyle: 'bold'
+      this.newHighText = this.add.text(width / 2, height * 0.55, 'NEW HIGH SCORE!', {
+        fontFamily: 'Arial', fontSize: '24px',
+        color: '#ffcc00', fontStyle: 'bold'
       }).setOrigin(0.5);
     }
 
     // Play again
-    const playBtn = this.add.text(width / 2, height * 0.7, 'PLAY AGAIN', {
-      fontFamily: 'Arial',
-      fontSize: '28px',
-      color: '#00cc66',
-      fontStyle: 'bold'
+    this.playBtn = this.add.text(width / 2, height * 0.7, 'PLAY AGAIN', {
+      fontFamily: 'Arial', fontSize: '28px',
+      color: '#00cc66', fontStyle: 'bold'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
-    playBtn.on('pointerover', () => playBtn.setColor('#00ff88'));
-    playBtn.on('pointerout', () => playBtn.setColor('#00cc66'));
-    playBtn.on('pointerdown', () => {
+    this.playBtn.on('pointerover', () => this.playBtn.setColor('#00ff88'));
+    this.playBtn.on('pointerout', () => this.playBtn.setColor('#00cc66'));
+    this.playBtn.on('pointerdown', () => {
       this.audio.play("button");
       this.scene.start('Game');
     });
 
-    // Menu
-    const menuBtn = this.add.text(width / 2, height * 0.8, 'MENU', {
+    this.menuBtn = this.add.text(width / 2, height * 0.8, 'MENU', {
       fontFamily: 'Arial',
       fontSize: '20px',
       color: '#888888'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-    menuBtn.on('pointerover', () => menuBtn.setColor('#bbbbbb'));
-    menuBtn.on('pointerout', () => menuBtn.setColor('#888888'));
-    menuBtn.on('pointerdown', () => {
+    this.menuBtn.on('pointerover', () => this.menuBtn.setColor('#bbbbbb'));
+    this.menuBtn.on('pointerout', () => this.menuBtn.setColor('#888888'));
+    this.menuBtn.on('pointerdown', () => {
       this.audio.play("button");
       this.scene.start('MainMenu');
     });
 
     // Handle resize
     this.scale.on('resize', this.handleResize, this);
+
+    this.events.once("shutdown", this.shutdown, this);
   }
 
   handleResize (gameSize) {
-    // Game Over
-    
-    // Score
-
-    // Time survived
-
-    // New high score
-
-    // Play again
-
-    // Menu
+    const { width, height } = gameSize;
+    this.gameOverText.setPosition(width / 2, height * 0.2);
+    this.scoreText.setPosition(width / 2, height * 0.35);
+    this.timeText.setPosition(width / 2, height * 0.45);
+    this.newHighText?.setPosition(width / 2, height * 0.55);
+    this.playBtn.setPosition(width / 2, height * 0.7);
+    this.menuBtn.setPosition(width / 2, height * 0.8);
   }
 
   shutdown () {

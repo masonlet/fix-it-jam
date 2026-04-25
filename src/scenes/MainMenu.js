@@ -54,6 +54,8 @@ export class MainMenu extends Scene {
     this.scale.on("resize", this.handleResize, this);
 
     YouTubePlayables.gameReady();
+
+    this.events.once("shutdown", this.shutdown, this);
   }
 
   handleResize (gameSize) {
