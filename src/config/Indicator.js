@@ -6,7 +6,7 @@ export const INDICATOR = {
     Y_START_PCT: -0.25,
     STROKE_WIDTH: 1,
   },
-    COLOUR: {
+  COLOUR: {
     FAULT: 0xff4444,
     FIXED: 0x00cc66,
   }

@@ -5,20 +5,20 @@ const TUNING = {
 }
 
 const LAYOUT = {
-  BOLT_SIZE_PCT: 0.12,
+  PIPE_SIZE_PCT: 0.8,
+  VALVE_SIZE_PCT: 0.4,
   RING_RADIUS_PCT: 0.15,
   RING_THICKNESS_PCT: 0.015,
-  STROKE_WIDTH: 2,
 }
 
 const COLOUR = {
-  BOLT_FILL: 0x888888,
-  BOLT_STROKE: 0xcccccc,
   RING_BG: 0x222222,
   RING_FILL: 0x00cc66,
 }
 
 export class SpinMinigame {
+  static useDefaultPopup = false;
+
   constructor (scene, cx, cy, onComplete) {
     this.scene = scene;
     this.onComplete = onComplete;
@@ -32,15 +32,20 @@ export class SpinMinigame {
     this.lastDrawnPct = 0;
 
     const { width } = scene.scale;
-    const boltSize = width * LAYOUT.BOLT_SIZE_PCT;
+    const pipeSize = width * LAYOUT.PIPE_SIZE_PCT;
+    const valveSize = width * LAYOUT.VALVE_SIZE_PCT;
     this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
     this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
 
-    // Bolt
-    this.bolt = scene.add.rectangle(
-      cx, cy, boltSize, boltSize, COLOUR.BOLT_FILL
-    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.BOLT_STROKE)
-     .setDepth(DEPTH.MINIGAME);
+    // Pipe
+    this.pipe = scene.add.image(cx, cy, "spin-pipe")
+      .setDisplaySize(pipeSize, pipeSize)
+      .setDepth(DEPTH.MINIGAME);
+
+    // Valve
+    this.valve = scene.add.image(cx, cy, "spin-valve")
+      .setDisplaySize(valveSize, valveSize)
+      .setDepth(DEPTH.MINIGAME);
 
     // Progress ring
     this.ring = scene.add.graphics().setDepth(DEPTH.MINIGAME);
@@ -74,19 +79,18 @@ export class SpinMinigame {
 
   #handleMove (pointer) {
     if (!this.pointerDown || this.completed) return;
+
     const angle = Math.atan2(pointer.y - this.cy, pointer.x - this.cx);
     if (this.lastAngle !== null) {
       let delta = angle - this.lastAngle;
-      // Handle wraparound
       if (delta > Math.PI) delta -= 2 * Math.PI;
       if (delta < -Math.PI) delta += 2 * Math.PI;
 
-      // Only count clockwise
       if (delta > 0) {
         if (this.hintVisible) this.#hideHint();
         const deltaDeg = delta * 180 / Math.PI;
         this.accumulatedDeg += deltaDeg;
-        this.bolt.rotation += delta;
+        this.valve.rotation += delta;
         const pct = Math.min(1, this.accumulatedDeg / TUNING.REQUIRED_ROTATION_DEG);
         if (Math.abs(pct - this.lastDrawnPct) >= 0.005) {
           this.#drawRing(pct);
@@ -103,6 +107,7 @@ export class SpinMinigame {
 
   #drawRing (pct) {
     this.ring.clear();
+
     // Background ring
     this.ring.lineStyle(this.ringThickness, COLOUR.RING_BG);
     this.ring.strokeCircle(this.cx, this.cy, this.ringRadius);
@@ -158,7 +163,8 @@ export class SpinMinigame {
     this.scene.input.off("pointerdown", this.onPointerDown);
     this.scene.input.off("pointermove", this.onPointerMove);
     this.scene.input.off("pointerup", this.onPointerUp);
-    this.bolt.destroy();
+    this.pipe.destroy();
+    this.valve.destroy();
     this.ring.destroy();
     this.hintTween?.stop();
     this.hint?.destroy();
@@ -167,11 +173,13 @@ export class SpinMinigame {
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
-    const boltSize = width * LAYOUT.BOLT_SIZE_PCT;
+    const pipeSize = width * LAYOUT.PIPE_SIZE_PCT;
+    const valveSize = width * LAYOUT.VALVE_SIZE_PCT;
     this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
     this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
 
-    this.bolt.setPosition(this.cx, this.cy).setSize(boltSize, boltSize);
+    this.pipe.setPosition(this.cx, this.cy).setDisplaySize(pipeSize, pipeSize);
+    this.valve.setPosition(this.cx, this.cy).setDisplaySize(valveSize, valveSize);
     const pct = Math.min(1, this.accumulatedDeg / TUNING.REQUIRED_ROTATION_DEG);
     this.#drawRing(pct);
 
