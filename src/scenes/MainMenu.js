@@ -14,7 +14,7 @@ export class MainMenu extends Scene {
      const { width, height } = this.scale;
 
     // Title
-    this.add.text(width / 2, height * 0.35, "FIX IT!", {
+    this.title = this.add.text(width / 2, height * 0.35, "FIX IT!", {
       fontFamily: "Arial",
       fontSize: "64px",
       color: "#ffffff",
@@ -23,14 +23,14 @@ export class MainMenu extends Scene {
 
     // High Score
     const highScore = this.registry.get("highScore") || 0;
-    this.add.text(width / 2, height * 0.5, `High Score: ${highScore}`, {
+    this.highScoreText = this.add.text(width / 2, height * 0.5, `High Score: ${highScore}`, {
       fontFamily: "Arial",
       fontSize: "20px",
       color: "#aaaaaa"
     }).setOrigin(0.5);
 
     // Tap to start
-    const prompt = this.add.text(width / 2, height * 0.65, "TAP TO START", {
+    this.prompt = this.add.text(width / 2, height * 0.65, "TAP TO START", {
       fontFamily: "Arial",
       fontSize: "28px",
       color: "#00cc66",
@@ -39,7 +39,7 @@ export class MainMenu extends Scene {
 
     // Pulse animation on the prompt
     this.tweens.add({
-      targets: prompt,
+      targets: this.prompt,
       alpha: 0.3,
       duration: 800,
       yoyo: true,
@@ -51,6 +51,19 @@ export class MainMenu extends Scene {
       this.scene.start("Game");
     });
 
+    this.scale.on("resize", this.handleResize, this);
+
     YouTubePlayables.gameReady();
+  }
+
+  handleResize (gameSize) {
+    const { width, height } = gameSize;
+    this.title.setPosition(width / 2, height * 0.35);
+    this.highScoreText.setPosition(width / 2, height * 0.5);
+    this.prompt.setPosition(width / 2, height * 0.65);
+  }
+
+  shutdown () {
+    this.scale.off("resize", this.handleResize, this);
   }
 }
