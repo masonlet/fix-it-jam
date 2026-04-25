@@ -13,6 +13,7 @@ export class Preloader extends Scene {
 
   preload () {
     // Audio
+    //    Game
     this.load.audio("sfx-button", "assets/audio/button.wav");
     this.load.audio("sfx-oof", "assets/audio/oof.wav");
     this.load.audio("sfx-click", "assets/audio/click.wav");
@@ -23,6 +24,8 @@ export class Preloader extends Scene {
     this.load.audio("sfx-drag-connect", "assets/audio/minigames/drag/connect.wav");
     this.load.audio("sfx-tap-complete", "assets/audio/minigames/tap/complete.wav");
     this.load.audio("sfx-tap-button", "assets/audio/minigames/tap/button.wav");
+    this.load.audio("sfx-spin-turn", "assets/audio/minigames/spin/spin.wav");
+    this.load.audio("sfx-spin-complete", "assets/audio/minigames/spin/complete.wav");
 
     // Images
     //   Game

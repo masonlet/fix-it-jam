@@ -30,6 +30,8 @@ export class SpinMinigame {
     this.completed = false;
     this.hintVisible = true;
     this.lastDrawnPct = 0;
+    this.spinSound = null;
+    this.spinIdleTimer = null;
 
     const { width } = scene.scale;
     const pipeSize = width * LAYOUT.PIPE_SIZE_PCT;
@@ -87,6 +89,7 @@ export class SpinMinigame {
       if (delta < -Math.PI) delta += 2 * Math.PI;
 
       if (delta > 0) {
+        this.#startSpinSound();
         if (this.hintVisible) this.#hideHint();
         const deltaDeg = delta * 180 / Math.PI;
         this.accumulatedDeg += deltaDeg;
@@ -97,12 +100,27 @@ export class SpinMinigame {
           this.lastDrawnPct = pct;
         }
         if (pct >= 1) {
+          this.#stopSpinSound();
           this.completed = true;
+          this.scene.audio.play("spin-complete");
           this.onComplete();
         }
       }
     }
     this.lastAngle = angle;
+  }
+
+  #startSpinSound () {
+    const sound = this.scene.audio.sounds["spin-turn"];
+    if (!sound?.isPlaying) {
+      this.scene.audio.play("spin-turn", { loop: true });
+    }
+    this.spinIdleTimer?.remove();
+    this.spinIdleTimer = this.scene.time.delayedCall(150, () => this.#stopSpinSound());
+  }
+
+  #stopSpinSound () {
+    this.scene.audio.stop("spin-turn");
   }
 
   #drawRing (pct) {
@@ -168,6 +186,8 @@ export class SpinMinigame {
     this.ring.destroy();
     this.hintTween?.stop();
     this.hint?.destroy();
+    this.#stopSpinSound();
+    this.spinIdleTimer?.remove();
   }
 
   onResize (width, height) {

@@ -28,6 +28,8 @@ export class Game extends Scene {
     this.audio.register("drag-connect", "sfx-drag-connect");
     this.audio.register("tap-button", "sfx-tap-button");
     this.audio.register("tap-complete", "sfx-tap-complete");
+    this.audio.register("spin-turn", "sfx-spin-turn");
+    this.audio.register("spin-complete", "sfx-spin-complete");
  
     // Variables
     this.elapsedTime = 0;

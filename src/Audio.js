@@ -8,7 +8,12 @@ export class Audio {
     this.sounds[key] = this.scene.sound.add(assetKey);
   }
 
-  play (key) {
-    this.sounds[key]?.play();
+  play (key, config) {
+    this.sounds[key]?.play(config);
+    return this.sounds[key];
+  }
+
+  stop (key) {
+    this.sounds[key]?.stop();
   }
 }
