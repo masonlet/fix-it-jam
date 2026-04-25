@@ -5,6 +5,6 @@ export const DRAG = {
     START_OFFSET_X_PCT: -0.15,
     SLOT_OFFSET_X_PCT: 0.15,
     STROKE_WIDTH: 2,
-    SNAP_TOLERANCE_PCT: 0.35,
+    SNAP_TOLERANCE_PCT: 0.5,
   }
 }

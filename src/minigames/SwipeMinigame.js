@@ -120,10 +120,8 @@ export class SwipeMinigame {
         onComplete: () => {
           this.piece.destroy();
           this.piece = null;
-          this.stageDelayTimer = this.scene.time.delayedCall(SWIPE.TUNING.STAGE_DELAY_MS, () => {
-            this.stage = 2;
-            this.#spawnGreen();
-          });
+          this.stage = 2;
+          this.#spawnGreen();
         },
       });
     } else {
@@ -142,7 +140,6 @@ export class SwipeMinigame {
     this.scene.input.off("pointerup", this.onPointerUp);
     this.arrowBounceTween?.stop();
     this.advanceTween?.stop();
-    this.stageDelayTimer?.remove();
     this.piece?.destroy();
     this.arrows?.destroy();
   }
