@@ -1,9 +1,16 @@
 import { DEPTH } from "../config/Depth";
 
 const LAYOUT = {
-  CUBE_SIZE_PCT: 0.12,
+  NARROW_WIDTH: 650,
+  LAMP_WIDTH_PCT: 0.4,
+  LAMP_WIDTH_PCT_NARROW: 0.7,
+  LAMP_HEIGHT_PCT: 0.6,
+  LAMP_HEIGHT_PCT_NARROW: 0.4,
+  BULB_SIZE_PCT: 0.24,
+  BULB_SIZE_PCT_NARROW: 0.5,
   ARROW_SIZE_PCT: 0.05,
-  STROKE_WIDTH: 2,
+  SOCKET_Y_PCT: 0.45,
+  NEW_BULB_Y_PCT: 0.85,
 }
 
 const TUNING = {
@@ -14,15 +21,15 @@ const TUNING = {
 }
 
 const COLOUR = {
-  BROKEN_FILL: 0xff4444,
-  BROKEN_STROKE: 0xcc0000,
-  BROKEN_ARROW: 0xaa2222,
-  FIXED_FILL: 0x00cc66,
-  FIXED_STROKE: 0x009944,
-  FIXED_ARROW: 0x007733,
+  BROKEN_TINT: 0x444444,
+  FIXED_TINT: 0xffdd66,
+  ARROW_BROKEN: 0xaa2222,
+  ARROW_FIXED: 0x007733,
 }
 
 export class SwipeMinigame {
+  static useDefaultPopup = false;
+
   constructor (scene, cx, cy, onComplete) {
     this.scene = scene;
     this.onComplete = onComplete;
@@ -35,12 +42,19 @@ export class SwipeMinigame {
     this.arrowsVisible = true;
 
     const { width, height } = scene.scale;
-    this.cubeSize = width * LAYOUT.CUBE_SIZE_PCT;
+    const { lampWidth, lampHeight, bulbSize } = this.#computeSizes(width, height);
+
+    this.bulbSize = bulbSize;
     this.arrowSize = width * LAYOUT.ARROW_SIZE_PCT;
     this.threshold = height * TUNING.SWIPE_THRESHOLD_PCT;
-    this.greenStartY = height * 0.9;
+    this.socketY = height * LAYOUT.SOCKET_Y_PCT;
+    this.newBulbY = height * LAYOUT.NEW_BULB_Y_PCT;
 
-    this.#spawnRed();
+    this.lamp = scene.add.image(cx, cy, "swipe-light")
+      .setDisplaySize(lampWidth, lampHeight)
+      .setDepth(DEPTH.MINIGAME);
+
+    this.#spawnBroken();
 
     this.onPointerDown = (p) => {
       this.pointerDown = true;
@@ -57,25 +71,32 @@ export class SwipeMinigame {
     scene.input.on("pointerup", this.onPointerUp);
   }
 
-  #spawnRed () {
-    this.piece = this.scene.add.rectangle(
-      this.cx, this.cy, this.cubeSize, this.cubeSize, COLOUR.BROKEN_FILL
-    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.BROKEN_STROKE)
-     .setDepth(DEPTH.MINIGAME);
+  #spawnBroken () {
+    this.bulbInsert = this.scene.add.image(this.cx, this.socketY, "swipe-bulb-insert")
+      .setDisplaySize(this.bulbSize, this.bulbSize)
+      .setTint(COLOUR.BROKEN_TINT)
+      .setDepth(DEPTH.MINIGAME);
+    this.bulbBorder = this.scene.add.image(this.cx, this.socketY, "swipe-bulb")
+      .setDisplaySize(this.bulbSize, this.bulbSize)
+      .setDepth(DEPTH.MINIGAME);
 
-    this.arrows = this.#drawArrows(this.cx, this.cy + this.cubeSize / 2 + this.arrowSize, 1, COLOUR.BROKEN_ARROW);
+    this.arrows = this.#drawArrows(this.cx, this.socketY + this.bulbSize / 2 + this.arrowSize, 1, COLOUR.ARROW_BROKEN);
     this.arrowBounceTween = this.#startBounce(this.arrows, 1);
   }
 
-  #spawnGreen () {
-    this.piece = this.scene.add.rectangle(
-      this.cx, this.greenStartY, this.cubeSize, this.cubeSize, COLOUR.FIXED_FILL
-    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.FIXED_STROKE)
-     .setDepth(DEPTH.MINIGAME);
+  #spawnFixed () {
+    this.bulbInsert = this.scene.add.image(this.cx, this.newBulbY, "swipe-bulb-insert")
+      .setDisplaySize(this.bulbSize, this.bulbSize)
+      .setTint(COLOUR.FIXED_TINT)
+      .setDepth(DEPTH.MINIGAME);
+    this.bulbBorder = this.scene.add.image(this.cx, this.newBulbY, "swipe-bulb")
+      .setDisplaySize(this.bulbSize, this.bulbSize)
+      .setDepth(DEPTH.MINIGAME);
+
     this.pieceOffset = 0;
     this.arrowsVisible = true;
 
-    this.arrows = this.#drawArrows(this.cx, this.greenStartY - this.cubeSize / 2, -1, COLOUR.FIXED_ARROW);
+    this.arrows = this.#drawArrows(this.cx, this.newBulbY - this.bulbSize / 2, -1, COLOUR.ARROW_FIXED);
     this.arrowBounceTween = this.#startBounce(this.arrows, -1);
   }
 
@@ -121,8 +142,8 @@ export class SwipeMinigame {
       const valid = this.stage === 1 ? delta > 0 : delta < 0;
       if (valid) {
         this.pieceOffset += Math.abs(delta);
-        const sign = this.stage === 1 ? 1 : -1;
-        this.piece.y += delta;
+        this.bulbInsert.y += delta;
+        this.bulbBorder.y += delta;
         if (this.arrowsVisible) this.#hideArrows();
         if (this.pieceOffset >= this.threshold) this.#advance();
       }
@@ -134,21 +155,24 @@ export class SwipeMinigame {
     this.pointerDown = false;
     this.lastY = null;
     if (this.stage === 1) {
+      const targetY = this.scene.scale.height + this.bulbSize;
       this.advanceTween = this.scene.tweens.add({
-        targets: this.piece,
-        y: this.scene.scale.height + this.cubeSize,
+        targets: [this.bulbInsert, this.bulbBorder],
+        y: targetY,
         duration: TUNING.ANIM_DURATION_MS,
         onComplete: () => {
-          this.piece.destroy();
-          this.piece = null;
+          this.bulbInsert.destroy();
+          this.bulbBorder.destroy();
+          this.bulbInsert = null;
+          this.bulbBorder = null;
           this.stage = 2;
-          this.#spawnGreen();
+          this.#spawnFixed();
         },
       });
     } else {
       this.advanceTween = this.scene.tweens.add({
-        targets: this.piece,
-        y: this.cy,
+        targets: [this.bulbInsert, this.bulbBorder],
+        y: this.socketY,
         duration: TUNING.ANIM_DURATION_MS,
         onComplete: () => this.onComplete(),
       });
@@ -161,13 +185,33 @@ export class SwipeMinigame {
     this.scene.input.off("pointerup", this.onPointerUp);
     this.arrowBounceTween?.stop();
     this.advanceTween?.stop();
-    this.piece?.destroy();
+    this.lamp?.destroy();
+    this.bulbInsert?.destroy();
+    this.bulbBorder?.destroy();
     this.arrows?.destroy();
   }
 
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
+
     this.threshold = height * TUNING.SWIPE_THRESHOLD_PCT;
+    this.socketY = height * LAYOUT.SOCKET_Y_PCT;
+    this.newBulbY = height * LAYOUT.NEW_BULB_Y_PCT;
+    
+    const {lampWidth, lampHeight, bulbSize } = this.#computeSizes(width, height);
+    this.bulbSize = bulbSize;
+    this.lamp.setPosition(this.cx, this.cy).setDisplaySize(lampWidth, lampHeight);
+    this.bulbInsert?.setDisplaySize(bulbSize, bulbSize);
+    this.bulbBorder?.setDisplaySize(bulbSize, bulbSize);
+  }
+
+  #computeSizes (width, height) {
+    const narrow = width < LAYOUT.NARROW_WIDTH;
+    return {
+      lampWidth: width * (narrow ? LAYOUT.LAMP_WIDTH_PCT_NARROW : LAYOUT.LAMP_WIDTH_PCT),
+      lampHeight: height * (narrow ? LAYOUT.LAMP_HEIGHT_PCT_NARROW : LAYOUT.LAMP_HEIGHT_PCT),
+      bulbSize: width * (narrow ? LAYOUT.BULB_SIZE_PCT_NARROW : LAYOUT.BULB_SIZE_PCT),
+    };
   }
 }

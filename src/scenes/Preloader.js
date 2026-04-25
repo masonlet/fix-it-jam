@@ -38,6 +38,7 @@ export class Preloader extends Scene {
     this.load.image("item-walkie", "assets/items/walkie.png");
     this.load.image("item-tire", "assets/items/tire.png");
     this.load.image("item-pipe", "assets/items/pipe.png");
+    this.load.image("item-light", "assets/items/light.png");
 
     //   Minigames
     this.load.image("drag-plug", "assets/minigames/drag/plug.png");
@@ -46,6 +47,9 @@ export class Preloader extends Scene {
     this.load.image("pump-body", "assets/minigames/pump/body.png");
     this.load.image("spin-pipe", "assets/minigames/spin/pipe.png");
     this.load.image("spin-valve", "assets/minigames/spin/valve.png");
+    this.load.image("swipe-light", "assets/minigames/swipe/light.png");
+    this.load.image("swipe-bulb", "assets/minigames/swipe/bulb.png");
+    this.load.image("swipe-bulb-insert", "assets/minigames/swipe/bulb-insert.png");
   }
 
   create () {

@@ -5,4 +5,5 @@ export const ITEM_SPRITES = {
   [MINIGAME_TYPES.TAP]: "item-walkie",
   [MINIGAME_TYPES.PUMP]: "item-tire",
   [MINIGAME_TYPES.SPIN]: "item-pipe",
+  [MINIGAME_TYPES.SWIPE]: "item-light",
 };
