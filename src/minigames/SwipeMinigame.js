@@ -1,5 +1,26 @@
 import { DEPTH } from "../config/Depth";
-import { SWIPE } from "../config/minigames/Swipe";
+
+const LAYOUT = {
+  CUBE_SIZE_PCT: 0.12,
+  ARROW_SIZE_PCT: 0.05,
+  STROKE_WIDTH: 2,
+}
+
+const TUNING = {
+  SWIPE_THRESHOLD_PCT: 0.15,
+  ANIM_DURATION_MS: 300,
+  BOUNCE_AMPLITUDE_PCT: 0.015,
+  BOUNCE_PERIOD_MS: 1000,
+}
+
+const COLOUR = {
+  BROKEN_FILL: 0xff4444,
+  BROKEN_STROKE: 0xcc0000,
+  BROKEN_ARROW: 0xaa2222,
+  FIXED_FILL: 0x00cc66,
+  FIXED_STROKE: 0x009944,
+  FIXED_ARROW: 0x007733,
+}
 
 export class SwipeMinigame {
   constructor (scene, cx, cy, onComplete) {
@@ -14,9 +35,9 @@ export class SwipeMinigame {
     this.arrowsVisible = true;
 
     const { width, height } = scene.scale;
-    this.cubeSize = width * SWIPE.LAYOUT.CUBE_SIZE_PCT;
-    this.arrowSize = width * SWIPE.LAYOUT.ARROW_SIZE_PCT;
-    this.threshold = height * SWIPE.TUNING.SWIPE_THRESHOLD_PCT;
+    this.cubeSize = width * LAYOUT.CUBE_SIZE_PCT;
+    this.arrowSize = width * LAYOUT.ARROW_SIZE_PCT;
+    this.threshold = height * TUNING.SWIPE_THRESHOLD_PCT;
     this.greenStartY = height * 0.9;
 
     this.#spawnRed();
@@ -38,23 +59,23 @@ export class SwipeMinigame {
 
   #spawnRed () {
     this.piece = this.scene.add.rectangle(
-      this.cx, this.cy, this.cubeSize, this.cubeSize, SWIPE.COLOUR.BROKEN_FILL
-    ).setStrokeStyle(SWIPE.LAYOUT.STROKE_WIDTH, SWIPE.COLOUR.BROKEN_STROKE)
+      this.cx, this.cy, this.cubeSize, this.cubeSize, COLOUR.BROKEN_FILL
+    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.BROKEN_STROKE)
      .setDepth(DEPTH.MINIGAME);
 
-    this.arrows = this.#drawArrows(this.cx, this.cy + this.cubeSize / 2 + this.arrowSize, 1, SWIPE.COLOUR.BROKEN_ARROW);
+    this.arrows = this.#drawArrows(this.cx, this.cy + this.cubeSize / 2 + this.arrowSize, 1, COLOUR.BROKEN_ARROW);
     this.arrowBounceTween = this.#startBounce(this.arrows, 1);
   }
 
   #spawnGreen () {
     this.piece = this.scene.add.rectangle(
-      this.cx, this.greenStartY, this.cubeSize, this.cubeSize, SWIPE.COLOUR.FIXED_FILL
-    ).setStrokeStyle(SWIPE.LAYOUT.STROKE_WIDTH, SWIPE.COLOUR.FIXED_STROKE)
+      this.cx, this.greenStartY, this.cubeSize, this.cubeSize, COLOUR.FIXED_FILL
+    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.FIXED_STROKE)
      .setDepth(DEPTH.MINIGAME);
     this.pieceOffset = 0;
     this.arrowsVisible = true;
 
-    this.arrows = this.#drawArrows(this.cx, this.greenStartY - this.cubeSize / 2, -1, SWIPE.COLOUR.FIXED_ARROW);
+    this.arrows = this.#drawArrows(this.cx, this.greenStartY - this.cubeSize / 2, -1, COLOUR.FIXED_ARROW);
     this.arrowBounceTween = this.#startBounce(this.arrows, -1);
   }
 
@@ -75,11 +96,11 @@ export class SwipeMinigame {
   }
 
   #startBounce (arrows, direction) {
-    const amplitude = this.scene.scale.height * SWIPE.TUNING.BOUNCE_AMPLITUDE_PCT;
+    const amplitude = this.scene.scale.height * TUNING.BOUNCE_AMPLITUDE_PCT;
     return this.scene.tweens.add({
       targets: arrows,
       y: arrows.y + amplitude * direction,
-      duration: SWIPE.TUNING.BOUNCE_PERIOD_MS / 2,
+      duration: TUNING.BOUNCE_PERIOD_MS / 2,
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut",
@@ -116,7 +137,7 @@ export class SwipeMinigame {
       this.advanceTween = this.scene.tweens.add({
         targets: this.piece,
         y: this.scene.scale.height + this.cubeSize,
-        duration: SWIPE.TUNING.ANIM_DURATION_MS,
+        duration: TUNING.ANIM_DURATION_MS,
         onComplete: () => {
           this.piece.destroy();
           this.piece = null;
@@ -128,7 +149,7 @@ export class SwipeMinigame {
       this.advanceTween = this.scene.tweens.add({
         targets: this.piece,
         y: this.cy,
-        duration: SWIPE.TUNING.ANIM_DURATION_MS,
+        duration: TUNING.ANIM_DURATION_MS,
         onComplete: () => this.onComplete(),
       });
     }
@@ -147,6 +168,6 @@ export class SwipeMinigame {
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
-    this.threshold = height * SWIPE.TUNING.SWIPE_THRESHOLD_PCT;
+    this.threshold = height * TUNING.SWIPE_THRESHOLD_PCT;
   }
 }

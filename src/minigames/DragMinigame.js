@@ -1,5 +1,13 @@
 import { DEPTH } from "../config/Depth";
-import { DRAG } from "../config/minigames/Drag";
+
+const LAYOUT = {
+  PIECE_SIZE_PCT: 0.1,
+  SLOT_SIZE_PCT: 0.12,
+  START_OFFSET_X_PCT: -0.15,
+  SLOT_OFFSET_X_PCT: 0.15,
+  STROKE_WIDTH: 2,
+  SNAP_TOLERANCE_PCT: 0.5,
+}
 
 export class DragMinigame {
   constructor (scene, cx, cy, onComplete) {
@@ -8,14 +16,14 @@ export class DragMinigame {
     this.completed = false;
 
     const { width } = scene.scale;
-    const pieceSize = width * DRAG.LAYOUT.PIECE_SIZE_PCT;
-    const slotSize = width * DRAG.LAYOUT.SLOT_SIZE_PCT;
+    const pieceSize = width * LAYOUT.PIECE_SIZE_PCT;
+    const slotSize = width * LAYOUT.SLOT_SIZE_PCT;
 
-    this.startX = cx + width * DRAG.LAYOUT.START_OFFSET_X_PCT;
+    this.startX = cx + width * LAYOUT.START_OFFSET_X_PCT;
     this.startY = cy;
-    this.slotX = cx + width * DRAG.LAYOUT.SLOT_OFFSET_X_PCT;
+    this.slotX = cx + width * LAYOUT.SLOT_OFFSET_X_PCT;
     this.slotY = cy;
-    this.snapTolerance = pieceSize * DRAG.LAYOUT.SNAP_TOLERANCE_PCT;
+    this.snapTolerance = pieceSize * LAYOUT.SNAP_TOLERANCE_PCT;
 
     this.slot = scene.add.image(this.slotX, this.slotY, "drag-socket")
       .setDisplaySize(slotSize, slotSize)
@@ -67,14 +75,14 @@ export class DragMinigame {
   onResize (width, height) {
     const cx = width / 2;
     const cy = height / 2;
-    const pieceSize = width * DRAG.LAYOUT.PIECE_SIZE_PCT;
-    const slotSize = width * DRAG.LAYOUT.SLOT_SIZE_PCT;
+    const pieceSize = width * LAYOUT.PIECE_SIZE_PCT;
+    const slotSize = width * LAYOUT.SLOT_SIZE_PCT;
 
-    this.startX = cx + width * DRAG.LAYOUT.START_OFFSET_X_PCT;
+    this.startX = cx + width * LAYOUT.START_OFFSET_X_PCT;
     this.startY = cy;
-    this.slotX = cx + width * DRAG.LAYOUT.SLOT_OFFSET_X_PCT;
+    this.slotX = cx + width * LAYOUT.SLOT_OFFSET_X_PCT;
     this.slotY = cy;
-    this.snapTolerance = pieceSize * DRAG.LAYOUT.SNAP_TOLERANCE_PCT;
+    this.snapTolerance = pieceSize * LAYOUT.SNAP_TOLERANCE_PCT;
 
     this.slot.setPosition(this.slotX, this.slotY).setDisplaySize(slotSize, slotSize);
     if (this.completed) {

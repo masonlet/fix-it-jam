@@ -1,5 +1,22 @@
 import { DEPTH } from "../config/Depth";
-import { SPIN } from "../config/minigames/Spin";
+
+const TUNING = {
+  REQUIRED_ROTATION_DEG: 2000,
+}
+
+const LAYOUT = {
+  BOLT_SIZE_PCT: 0.12,
+  RING_RADIUS_PCT: 0.15,
+  RING_THICKNESS_PCT: 0.015,
+  STROKE_WIDTH: 2,
+}
+
+const COLOUR = {
+  BOLT_FILL: 0x888888,
+  BOLT_STROKE: 0xcccccc,
+  RING_BG: 0x222222,
+  RING_FILL: 0x00cc66,
+}
 
 export class SpinMinigame {
   constructor (scene, cx, cy, onComplete) {
@@ -15,14 +32,14 @@ export class SpinMinigame {
     this.lastDrawnPct = 0;
 
     const { width } = scene.scale;
-    const boltSize = width * SPIN.LAYOUT.BOLT_SIZE_PCT;
-    this.ringRadius = width * SPIN.LAYOUT.RING_RADIUS_PCT;
-    this.ringThickness = width * SPIN.LAYOUT.RING_THICKNESS_PCT;
+    const boltSize = width * LAYOUT.BOLT_SIZE_PCT;
+    this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
+    this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
 
     // Bolt
     this.bolt = scene.add.rectangle(
-      cx, cy, boltSize, boltSize, SPIN.COLOUR.BOLT_FILL
-    ).setStrokeStyle(SPIN.LAYOUT.STROKE_WIDTH, SPIN.COLOUR.BOLT_STROKE)
+      cx, cy, boltSize, boltSize, COLOUR.BOLT_FILL
+    ).setStrokeStyle(LAYOUT.STROKE_WIDTH, COLOUR.BOLT_STROKE)
      .setDepth(DEPTH.MINIGAME);
 
     // Progress ring
@@ -70,7 +87,7 @@ export class SpinMinigame {
         const deltaDeg = delta * 180 / Math.PI;
         this.accumulatedDeg += deltaDeg;
         this.bolt.rotation += delta;
-        const pct = Math.min(1, this.accumulatedDeg / SPIN.TUNING.REQUIRED_ROTATION_DEG);
+        const pct = Math.min(1, this.accumulatedDeg / TUNING.REQUIRED_ROTATION_DEG);
         if (Math.abs(pct - this.lastDrawnPct) >= 0.005) {
           this.#drawRing(pct);
           this.lastDrawnPct = pct;
@@ -87,12 +104,12 @@ export class SpinMinigame {
   #drawRing (pct) {
     this.ring.clear();
     // Background ring
-    this.ring.lineStyle(this.ringThickness, SPIN.COLOUR.RING_BG);
+    this.ring.lineStyle(this.ringThickness, COLOUR.RING_BG);
     this.ring.strokeCircle(this.cx, this.cy, this.ringRadius);
 
     // Progress arc
     if (pct > 0) {
-      this.ring.lineStyle(this.ringThickness, SPIN.COLOUR.RING_FILL);
+      this.ring.lineStyle(this.ringThickness, COLOUR.RING_FILL);
       this.ring.beginPath();
       this.ring.arc(
         this.cx, this.cy, this.ringRadius,
@@ -150,12 +167,12 @@ export class SpinMinigame {
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
-    const boltSize = width * SPIN.LAYOUT.BOLT_SIZE_PCT;
-    this.ringRadius = width * SPIN.LAYOUT.RING_RADIUS_PCT;
-    this.ringThickness = width * SPIN.LAYOUT.RING_THICKNESS_PCT;
+    const boltSize = width * LAYOUT.BOLT_SIZE_PCT;
+    this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
+    this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
 
     this.bolt.setPosition(this.cx, this.cy).setSize(boltSize, boltSize);
-    const pct = Math.min(1, this.accumulatedDeg / SPIN.TUNING.REQUIRED_ROTATION_DEG);
+    const pct = Math.min(1, this.accumulatedDeg / TUNING.REQUIRED_ROTATION_DEG);
     this.#drawRing(pct);
 
     if (this.hintVisible) {

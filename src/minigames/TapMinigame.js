@@ -1,5 +1,12 @@
 import { DEPTH } from "../config/Depth";
-import { TAP } from "../config/minigames/Tap";
+
+const LAYOUT = {
+  BOX_COUNT: 3,
+  BOX_SIZE_PCT: 0.1,
+  BOX_SPACING_PCT: 0.15,
+  BG_SIZE_PCT: 0.5,
+  BUTTON_Y_OFFSET_PCT: 0.2,
+}
 
 export class TapMinigame {
   static useDefaultPopup = false;
@@ -7,22 +14,22 @@ export class TapMinigame {
   constructor (scene, cx, cy, onComplete) {
     this.scene = scene;
     this.onComplete = onComplete;
-    this.remaining = TAP.LAYOUT.BOX_COUNT;
+    this.remaining = LAYOUT.BOX_COUNT;
 
     const width = scene.scale.width;
-    const bgSize = width * TAP.LAYOUT.BG_SIZE_PCT;
-    const boxSize = width * TAP.LAYOUT.BOX_SIZE_PCT;
-    const spacing = width * TAP.LAYOUT.BOX_SPACING_PCT;
-    const totalWidth = spacing * (TAP.LAYOUT.BOX_COUNT - 1);
+    const bgSize = width * LAYOUT.BG_SIZE_PCT;
+    const boxSize = width * LAYOUT.BOX_SIZE_PCT;
+    const spacing = width * LAYOUT.BOX_SPACING_PCT;
+    const totalWidth = spacing * (LAYOUT.BOX_COUNT - 1);
     const startX = cx - totalWidth / 2;
-    const buttonY = cy + bgSize * TAP.LAYOUT.BUTTON_Y_OFFSET_PCT;
+    const buttonY = cy + bgSize * LAYOUT.BUTTON_Y_OFFSET_PCT;
 
     this.bg = scene.add.image(cx, cy, "tap-walkie")
       .setDisplaySize(bgSize, bgSize)
       .setDepth(DEPTH.MINIGAME);
 
     this.boxes = [];
-    for (let i = 0; i < TAP.LAYOUT.BOX_COUNT; i++) {
+    for (let i = 0; i < LAYOUT.BOX_COUNT; i++) {
       const box = scene.add.image(startX + i * spacing, buttonY, "tap-fault")
         .setDisplaySize(boxSize, boxSize)
         .setDepth(DEPTH.MINIGAME)
@@ -53,12 +60,12 @@ export class TapMinigame {
   onResize (width, height) {
     const cx = width / 2;
     const cy = height / 2;
-    const bgSize = width * TAP.LAYOUT.BG_SIZE_PCT;
-    const boxSize = width * TAP.LAYOUT.BOX_SIZE_PCT;
-    const spacing = width * TAP.LAYOUT.BOX_SPACING_PCT;
-    const totalWidth = spacing * (TAP.LAYOUT.BOX_COUNT - 1);
+    const bgSize = width * LAYOUT.BG_SIZE_PCT;
+    const boxSize = width * LAYOUT.BOX_SIZE_PCT;
+    const spacing = width * LAYOUT.BOX_SPACING_PCT;
+    const totalWidth = spacing * (LAYOUT.BOX_COUNT - 1);
     const startX = cx - totalWidth / 2;
-    const buttonY = cy + bgSize * TAP.LAYOUT.BUTTON_Y_OFFSET_PCT;
+    const buttonY = cy + bgSize * LAYOUT.BUTTON_Y_OFFSET_PCT;
     
     this.bg.setPosition(cx, cy).setDisplaySize(bgSize, bgSize);
     this.boxes.forEach((box, i) => {

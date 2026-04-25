@@ -1,5 +1,25 @@
 import { DEPTH } from "../config/Depth";
-import { TIMING } from "../config/minigames/Timing";
+
+const LAYOUT = {
+  RADIUS_PCT: 0.18,
+  THICKNESS_PCT: 0.015,
+  NEEDLE_LENGTH_PCT: 0.16,
+  NEEDLE_WIDTH_PCT: 0.01,
+  ZONE_ARC_DEG: 60,
+  STROKE_WIDTH: 2,
+}
+const TUNING = {
+  HITS_REQUIRED: 3,
+  MISSES_ALLOWED: 3,
+  NEEDLE_SPEED_DEG_PER_SEC: 300,
+  ARC_START_DEG: 0,
+  ARC_SWEEP_DEG: 360,
+}
+const COLOUR = {
+  ARC_BG: 0x222222,
+  ZONE_FILL: 0x00cc66,
+  NEEDLE_FILL: 0xffffff,
+}
 
 export class TimingMinigame {
   constructor (scene, cx, cy, onComplete, onFail) {
@@ -10,13 +30,13 @@ export class TimingMinigame {
     this.cy = cy;
 
     const { width } = scene.scale;
-    this.radius = width * TIMING.LAYOUT.RADIUS_PCT;
-    this.thickness = width * TIMING.LAYOUT.THICKNESS_PCT;
-    this.needleLength = width * TIMING.LAYOUT.NEEDLE_LENGTH_PCT;
-    this.needleWidth = width * TIMING.LAYOUT.NEEDLE_WIDTH_PCT;
+    this.radius = width * LAYOUT.RADIUS_PCT;
+    this.thickness = width * LAYOUT.THICKNESS_PCT;
+    this.needleLength = width * LAYOUT.NEEDLE_LENGTH_PCT;
+    this.needleWidth = width * LAYOUT.NEEDLE_WIDTH_PCT;
 
-    this.arcStart = TIMING.TUNING.ARC_START_DEG;
-    this.arcSweep = TIMING.TUNING.ARC_SWEEP_DEG;
+    this.arcStart = TUNING.ARC_START_DEG;
+    this.arcSweep = TUNING.ARC_SWEEP_DEG;
     this.arcEnd = this.arcStart + this.arcSweep;
 
     this.needleAngle = this.arcStart;
@@ -35,7 +55,7 @@ export class TimingMinigame {
 
     // Needle
     this.needle = scene.add.rectangle(
-      cx, cy, this.needleWidth, this.needleLength, TIMING.COLOUR.NEEDLE_FILL
+      cx, cy, this.needleWidth, this.needleLength, COLOUR.NEEDLE_FILL
     ).setOrigin(0.5, 1).setDepth(DEPTH.MINIGAME);
     this.#updateNeedle();
 
@@ -48,9 +68,9 @@ export class TimingMinigame {
 
   #generateZones () {
     const zones = [];
-    const minGap = TIMING.LAYOUT.ZONE_ARC_DEG + 10;
+    const minGap = LAYOUT.ZONE_ARC_DEG + 10;
     let attempts = 0;
-    while (zones.length < TIMING.TUNING.HITS_REQUIRED && attempts < 50) {
+    while (zones.length < TUNING.HITS_REQUIRED && attempts < 50) {
       const center = Math.random() * 360;
       const overlaps = zones.some(z => {
         let d = Math.abs(z.center - center);
@@ -67,7 +87,7 @@ export class TimingMinigame {
     this.graphics.clear();
 
     // Background arc
-    this.graphics.lineStyle(this.thickness, TIMING.COLOUR.ARC_BG);
+    this.graphics.lineStyle(this.thickness, COLOUR.ARC_BG);
     this.graphics.beginPath();
     this.graphics.arc(this.cx, this.cy, this.radius,
       Phaser.Math.DegToRad(this.arcStart),
@@ -76,10 +96,10 @@ export class TimingMinigame {
     this.graphics.strokePath();
 
     // Green zones
-    this.graphics.lineStyle(this.thickness, TIMING.COLOUR.ZONE_FILL);
+    this.graphics.lineStyle(this.thickness, COLOUR.ZONE_FILL);
     this.zones.forEach((z, i) => {
       if (this.zonesCleared[i]) return;
-      const half = TIMING.LAYOUT.ZONE_ARC_DEG / 2;
+      const half = LAYOUT.ZONE_ARC_DEG / 2;
       this.graphics.beginPath();
       this.graphics.arc(this.cx, this.cy, this.radius,
         Phaser.Math.DegToRad(z.center - half),
@@ -94,7 +114,7 @@ export class TimingMinigame {
   }
 
   #handleTap () {
-    const half = TIMING.LAYOUT.ZONE_ARC_DEG / 2;
+    const half = LAYOUT.ZONE_ARC_DEG / 2;
     let hitIndex = -1;
     this.zones.forEach((z, i) => {
       if (this.zonesCleared[i]) return;
@@ -106,13 +126,13 @@ export class TimingMinigame {
       this.zonesCleared[hitIndex] = true;
       this.hits++;
       this.#redraw();
-      if (this.hits >= TIMING.TUNING.HITS_REQUIRED) {
+      if (this.hits >= TUNING.HITS_REQUIRED) {
         this.acceptInput = false;
         this.onComplete();
       }
     } else {
       this.misses++;
-      if (this.misses >= TIMING.TUNING.MISSES_ALLOWED) {
+      if (this.misses >= TUNING.MISSES_ALLOWED) {
         this.acceptInput = false;
         this.onFail();
       }
@@ -120,7 +140,7 @@ export class TimingMinigame {
   }
 
   update (delta) {
-    const deltaDeg = TIMING.TUNING.NEEDLE_SPEED_DEG_PER_SEC * (delta / 1000);
+    const deltaDeg = TUNING.NEEDLE_SPEED_DEG_PER_SEC * (delta / 1000);
     this.needleAngle = (this.needleAngle + deltaDeg) % 360;
     this.#updateNeedle();
   }
@@ -134,10 +154,10 @@ export class TimingMinigame {
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
-    this.radius = width * TIMING.LAYOUT.RADIUS_PCT;
-    this.thickness = width * TIMING.LAYOUT.THICKNESS_PCT;
-    this.needleLength = width * TIMING.LAYOUT.NEEDLE_LENGTH_PCT;
-    this.needleWidth = width * TIMING.LAYOUT.NEEDLE_WIDTH_PCT;
+    this.radius = width * LAYOUT.RADIUS_PCT;
+    this.thickness = width * LAYOUT.THICKNESS_PCT;
+    this.needleLength = width * LAYOUT.NEEDLE_LENGTH_PCT;
+    this.needleWidth = width * LAYOUT.NEEDLE_WIDTH_PCT;
     this.needle.setPosition(this.cx, this.cy).setSize(this.needleWidth, this.needleLength);
     this.#redraw();
   }
