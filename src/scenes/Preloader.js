@@ -42,7 +42,8 @@ export class Preloader extends Scene {
     //   Items
     this.load.image("item-toaster", "assets/items/toaster.png");
     this.load.image("item-walkie", "assets/items/walkie.png");
-    
+    this.load.image("item-tire", "assets/items/tire.png");
+
     //   Drag
     this.load.image("drag-plug", "assets/minigames/drag/plug.png");
     this.load.image("drag-socket", "assets/minigames/drag/socket.png");
