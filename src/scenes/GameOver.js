@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { YouTubePlayables } from '../YouTubePlayables';
+import { WaveDash } from '../WaveDash';
 import { Audio } from '../Audio';
 
 export class GameOver extends Scene {
@@ -23,6 +24,7 @@ export class GameOver extends Scene {
     YouTubePlayables.saveData({
       highScore: isNewHigh ? score : highScore
     });
+    WaveDash.submitScore(score);
 
     const { width, height } = this.scale;
 

@@ -4,6 +4,7 @@ import { MainMenu } from './scenes/MainMenu';
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { YouTubePlayables } from './YouTubePlayables';
+import { WaveDash } from './WaveDash';
 
 const config = {
   type: Phaser.AUTO,
@@ -25,12 +26,11 @@ const config = {
 
 YouTubePlayables.boot(() => {
   const game = new Phaser.Game(config);
-  if (window.Wavedash) window.Wavedash.init();
+  WaveDash.boot();
 
   const applyAudioState = (enabled) => {
     game.sound.mute = !enabled;
   }
-
   applyAudioState(YouTubePlayables.isAudioEnabled());
   YouTubePlayables.setAudioChangeCallback(applyAudioState);
 
