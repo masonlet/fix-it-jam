@@ -5,10 +5,15 @@ const TUNING = {
 }
 
 const LAYOUT = {
-  PIPE_SIZE_PCT: 0.8,
+  NARROW_WIDTH: 650,
+  PIPE_SIZE_PCT: 0.4,
+  PIPE_SIZE_PCT_NARROW: 0.8,
   VALVE_SIZE_PCT: 0.4,
+  VALVE_SIZE_PCT_NARROW: 0.8,
   RING_RADIUS_PCT: 0.15,
+  RING_RADIUS_PCT_NARROW: 0.28,
   RING_THICKNESS_PCT: 0.015,
+  RING_THICKNESS_PCT_NARROW: 0.025,
 }
 
 const COLOUR = {
@@ -34,10 +39,9 @@ export class SpinMinigame {
     this.spinIdleTimer = null;
 
     const { width } = scene.scale;
-    const pipeSize = width * LAYOUT.PIPE_SIZE_PCT;
-    const valveSize = width * LAYOUT.VALVE_SIZE_PCT;
-    this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
-    this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
+    const { pipeSize, valveSize, ringRadius, ringThickness } = this.#computeSizes(width);
+    this.ringRadius = ringRadius;
+    this.ringThickness = ringThickness;
 
     // Pipe
     this.pipe = scene.add.image(cx, cy, "spin-pipe")
@@ -193,10 +197,9 @@ export class SpinMinigame {
   onResize (width, height) {
     this.cx = width / 2;
     this.cy = height / 2;
-    const pipeSize = width * LAYOUT.PIPE_SIZE_PCT;
-    const valveSize = width * LAYOUT.VALVE_SIZE_PCT;
-    this.ringRadius = width * LAYOUT.RING_RADIUS_PCT;
-    this.ringThickness = width * LAYOUT.RING_THICKNESS_PCT;
+    const { pipeSize, valveSize, ringRadius, ringThickness } = this.#computeSizes(width);
+    this.ringRadius = ringRadius;
+    this.ringThickness = ringThickness;
 
     this.pipe.setPosition(this.cx, this.cy).setDisplaySize(pipeSize, pipeSize);
     this.valve.setPosition(this.cx, this.cy).setDisplaySize(valveSize, valveSize);
@@ -216,5 +219,15 @@ export class SpinMinigame {
         ease: "Sine.easeInOut",
       });
     }
+  }
+
+  #computeSizes (width) {
+    const narrow = width < LAYOUT.NARROW_WIDTH;
+    return {
+      pipeSize: width * (narrow ? LAYOUT.PIPE_SIZE_PCT_NARROW : LAYOUT.PIPE_SIZE_PCT),
+      valveSize: width * (narrow ? LAYOUT.VALVE_SIZE_PCT_NARROW : LAYOUT.VALVE_SIZE_PCT),
+      ringRadius: width * (narrow ? LAYOUT.RING_RADIUS_PCT_NARROW : LAYOUT.RING_RADIUS_PCT),
+      ringThickness: width * (narrow ? LAYOUT.RING_THICKNESS_PCT_NARROW : LAYOUT.RING_THICKNESS_PCT),
+    };
   }
 }
