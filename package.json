@@ -16,7 +16,8 @@
     "homepage": "https://github.com/phaserjs/template-youtube-playables#readme",
     "scripts": {
         "dev": "vite --config vite/config.dev.mjs",
-        "build": "vite build --config vite/config.prod.mjs"
+        "build": "vite build --config vite/config.prod.mjs",
+        "preview": "vite preview"
     },
     "devDependencies": {
         "phaser": "^3.86.0",
