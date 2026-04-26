@@ -25,6 +25,7 @@ const config = {
 
 YouTubePlayables.boot(() => {
   const game = new Phaser.Game(config);
+  if (window.Wavedash) window.Wavedash.init();
 
   const applyAudioState = (enabled) => {
     game.sound.mute = !enabled;
