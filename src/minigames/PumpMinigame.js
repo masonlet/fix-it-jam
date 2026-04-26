@@ -30,6 +30,7 @@ export class PumpMinigame {
     this.lastHandleY = null;
     this.pointerDown = false;
     this.arrowsVisible = true;
+    this.pumpIdleTimer = null;
 
     const { width, height } = scene.scale;
     const { pumpWidth, pumpHeight, handleWidth, handleHeight, barWidth } = this.#computeSizes(width, height);
@@ -132,11 +133,13 @@ export class PumpMinigame {
     const clampedY = Phaser.Math.Clamp(y, this.handleTop + halfHandle, this.handleBottom - halfHandle);
 
     if (this.lastHandleY !== null && clampedY > this.lastHandleY) {
+      this.#startPumpSound();
       if (this.arrowsVisible) this.#hideArrows();
       this.pumpedDistance += clampedY - this.lastHandleY;
       const pct = Math.min(1, this.pumpedDistance / this.requiredDistance);
       this.bar.displayHeight = this.pumpHeight * LAYOUT.BAR_INSET_PCT * pct;
       if (pct >= 1) {
+        this.#stopPumpSound();
         this.scene.audio.play("pump-complete");
         this.onComplete();
       }
@@ -157,6 +160,8 @@ export class PumpMinigame {
     this.handleBorder.destroy();
     this.barBorder.destroy();
     this.bar.destroy();
+    this.#stopPumpSound();
+    this.pumpIdleTimer?.remove();
   }
 
   #computeSizes (width, height) {
@@ -169,6 +174,19 @@ export class PumpMinigame {
       handleHeight: height * (narrow ? LAYOUT.HANDLE_HEIGHT_PCT_NARROW : LAYOUT.HANDLE_HEIGHT_PCT),
       barWidth: width * (narrow ? LAYOUT.BAR_WIDTH_PCT_NARROW : LAYOUT.BAR_WIDTH_PCT),
     };
+  }
+
+  #startPumpSound () {
+    const sound = this.scene.audio.sounds["pump-down"];
+    if (!sound?.isPlaying) {
+      this.scene.audio.play("pump-down", { loop: true });
+    }
+    this.pumpIdleTimer?.remove();
+    this.pumpIdleTimer = this.scene.time.delayedCall(150, () => this.#stopPumpSound());
+  }
+
+  #stopPumpSound () {
+    this.scene.audio.stop("pump-down");
   }
 
   onResize (width, height) {

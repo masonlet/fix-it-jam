@@ -29,6 +29,7 @@ export class Game extends Scene {
     this.audio.register("tap-complete", "sfx-tap-complete");
     this.audio.register("spin-turn", "sfx-spin-turn");
     this.audio.register("spin-complete", "sfx-spin-complete");
+    this.audio.register("pump-down", "sfx-pump-down");
     this.audio.register("pump-complete", "sfx-pump-complete");
     this.audio.register("timing-click", "sfx-timing-click");
     this.audio.register("timing-complete", "sfx-timing-complete");
