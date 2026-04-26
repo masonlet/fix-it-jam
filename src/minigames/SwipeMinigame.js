@@ -152,6 +152,7 @@ export class SwipeMinigame {
   }
 
   #advance () {
+    this.scene.audio.play("swipe-move");
     this.pointerDown = false;
     this.lastY = null;
     if (this.stage === 1) {
@@ -174,7 +175,10 @@ export class SwipeMinigame {
         targets: [this.bulbInsert, this.bulbBorder],
         y: this.socketY,
         duration: TUNING.ANIM_DURATION_MS,
-        onComplete: () => this.onComplete(),
+        onComplete: () => {
+          this.scene.audio.play("swipe-complete");
+          this.onComplete();
+        },
       });
     }
   }

@@ -30,6 +30,8 @@ export class Preloader extends Scene {
     this.load.audio("sfx-pump-complete", "assets/audio/minigames/pump/complete.wav");
     this.load.audio("sfx-timing-click", "assets/audio/minigames/timing/click.wav");
     this.load.audio("sfx-timing-complete", "assets/audio/minigames/timing/complete.wav");
+    this.load.audio("sfx-swipe-move", "assets/audio/minigames/swipe/move.wav");
+    this.load.audio("sfx-swipe-complete", "assets/audio/minigames/swipe/complete.wav");
 
     // Images
     //   Game
