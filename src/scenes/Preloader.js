@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { YouTubePlayables } from "../YouTubePlayables";
+import { WaveDash } from "../WaveDash";
 
 const AUDIO_BASE = "assets/audio/";
 const AUDIO = [
@@ -63,7 +64,20 @@ export class Preloader extends Scene {
     IMAGES.forEach(([key, path]) => this.load.image(key, IMAGE_BASE + path));
   }
 
-  create () {
+  async create () {
+    let saved = null;
+    try {
+      if (WaveDash.isAvailable()) {
+        saved = await WaveDash.loadHighScore();
+      } else {
+        const data = await YouTubePlayables.loadData();
+        saved = data?.highScore ?? null;
+      }
+    } catch (e) {
+      console.warn('[Preloader] failed to load high score:', e);
+    }
+    if (saved) this.registry.set("highScore", saved);
+
     this.scene.start("MainMenu");
   }
 }

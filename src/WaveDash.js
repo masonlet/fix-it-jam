@@ -35,8 +35,21 @@ const submitScore = async (score) => {
   }
 }
 
+const loadHighScore = async () => {
+  if (!isAvailable() || !leaderboardId) return null;
+
+  try {
+    const res = await window.Wavedash.getMyLeaderboardEntries(leaderboardId);
+    if (res.success && res.data.length > 0) return res.data[0].score;
+  } catch (e) {
+    console.warn('[Wavedash] loadHighScore failed:', e);
+  }
+  return null;
+};
+
 export const WaveDash = {
   isAvailable,
   boot,
   submitScore,
+  loadHighScore,
 }

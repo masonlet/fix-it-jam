@@ -24,13 +24,11 @@ const config = {
   pixelArt: true,
 };
 
-YouTubePlayables.boot(() => {
+YouTubePlayables.boot(async () => {
   const game = new Phaser.Game(config);
-  WaveDash.boot();
+  await WaveDash.boot();
 
-  const applyAudioState = (enabled) => {
-    game.sound.mute = !enabled;
-  }
+  const applyAudioState = (enabled) => { game.sound.mute = !enabled; }
   applyAudioState(YouTubePlayables.isAudioEnabled());
   YouTubePlayables.setAudioChangeCallback(applyAudioState);
 
