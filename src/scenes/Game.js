@@ -9,33 +9,19 @@ import { Audio } from "../Audio";
 import { GAME } from "../config/Game";
 import { BELT } from "../config/Belt";
 
+const AUDIO_KEYS = [
+  "oof", "click",
+  "fail", "drag-connect", "tap-button", "tap-complete",
+  "spin-turn", "spin-complete", "pump-down", "pump-complete",
+  "timing-click", "timing-complete", "swipe-move", "swipe-complete",
+];
+
 export class Game extends Scene {
   constructor () {
     super("Game");
   }
 
   create () {
-    // Audio
-    this.audio = new Audio(this);
-
-    //   Gameplay
-    this.audio.register("oof", "sfx-oof");
-    this.audio.register("click", "sfx-click");
-
-    //   Minigames
-    this.audio.register("fail", "sfx-fail");
-    this.audio.register("drag-connect", "sfx-drag-connect");
-    this.audio.register("tap-button", "sfx-tap-button");
-    this.audio.register("tap-complete", "sfx-tap-complete");
-    this.audio.register("spin-turn", "sfx-spin-turn");
-    this.audio.register("spin-complete", "sfx-spin-complete");
-    this.audio.register("pump-down", "sfx-pump-down");
-    this.audio.register("pump-complete", "sfx-pump-complete");
-    this.audio.register("timing-click", "sfx-timing-click");
-    this.audio.register("timing-complete", "sfx-timing-complete");
-    this.audio.register("swipe-move", "sfx-swipe-move");
-    this.audio.register("swipe-complete", "sfx-swipe-complete");
- 
     // Variables
     this.elapsedTime = 0;
     this.score = 0;
@@ -46,12 +32,12 @@ export class Game extends Scene {
     this.hud = new Hud(this);
     this.hud.setLives(this.lives);
     this.hud.setScore(this.score);
-
     this.belt = new ConveyorBelt(this);
     this.spawner = new ItemSpawner(this);
     this.minigame = new MinigameManager(this);
-
     this.difficulty = new Difficulty();
+    this.audio = new Audio(this);
+    AUDIO_KEYS.forEach(key => this.audio.register(key, `sfx-${key}`));
 
     // Input
     this.input.on("pointerdown", (pointer) => {
