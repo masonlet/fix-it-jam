@@ -6,6 +6,7 @@ export const HUD = {
     SCORE_X_PCT: 0.7,
     LIVES_FONT_SIZE: "24px",
     SCORE_FONT_SIZE: "20px",
+    ICON_SIZE: 30,
   },
   COLOUR: {
     LIVES: "#ffffff",

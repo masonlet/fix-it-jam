@@ -23,6 +23,7 @@ const AUDIO = [
 
 const IMAGE_BASE = "assets/";
 const IMAGES = [
+  ["life-icon", "game/life.png"],
   ["belt-tile", "game/belt.png"],
   ["rectangle-border", "game/rectangle-border.png"],
   ["rectangle-insert", "game/rectangle-insert.png"],
