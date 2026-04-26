@@ -1,74 +1,68 @@
 import { Scene } from "phaser";
 import { YouTubePlayables } from "../YouTubePlayables";
 
+const AUDIO_BASE = "assets/audio/";
+const AUDIO = [
+  ["sfx-button", "button.wav"],
+  ["sfx-oof", "oof.wav"],
+  ["sfx-click", "click.wav"],
+  ["sfx-death", "death.wav"],
+  ["sfx-fail", "minigames/fail.wav"],
+  ["sfx-drag-connect", "minigames/drag/connect.wav"],
+  ["sfx-tap-complete", "minigames/tap/complete.wav"],
+  ["sfx-tap-button", "minigames/tap/button.wav"],
+  ["sfx-spin-turn", "minigames/spin/spin.wav"],
+  ["sfx-spin-complete", "minigames/spin/complete.wav"],
+  ["sfx-pump-down", "minigames/pump/down.wav"],
+  ["sfx-pump-complete", "minigames/pump/complete.wav"],
+  ["sfx-timing-click", "minigames/timing/click.wav"],
+  ["sfx-timing-complete", "minigames/timing/complete.wav"],
+  ["sfx-swipe-move", "minigames/swipe/move.wav"],
+  ["sfx-swipe-complete", "minigames/swipe/complete.wav"],
+];
+
+const IMAGE_BASE = "assets/";
+const IMAGES = [
+  ["belt-tile", "game/belt.png"],
+  ["rectangle-border", "game/rectangle-border.png"],
+  ["rectangle-insert", "game/rectangle-insert.png"],
+  ["square-border", "game/square-border.png"],
+  ["square-insert", "game/square-insert.png"],
+  ["item-background", "items/background.png"],
+  ["item-toaster", "items/toaster.png"],
+  ["item-walkie", "items/walkie.png"],
+  ["item-tire", "items/tire.png"],
+  ["item-pipe", "items/pipe.png"],
+  ["item-light", "items/light.png"],
+  ["item-gauge", "items/gauge.png"],
+  ["drag-background", "minigames/drag/background.png"],
+  ["drag-plug", "minigames/drag/plug.png"],
+  ["drag-socket", "minigames/drag/socket.png"],
+  ["tap-walkie", "minigames/tap/walkie-close.png"],
+  ["pump-body", "minigames/pump/body.png"],
+  ["spin-pipe", "minigames/spin/pipe.png"],
+  ["spin-valve", "minigames/spin/valve.png"],
+  ["swipe-light", "minigames/swipe/light.png"],
+  ["swipe-bulb", "minigames/swipe/bulb.png"],
+  ["swipe-bulb-insert", "minigames/swipe/bulb-insert.png"],
+  ["timing-gauge", "minigames/timing/gauge.png"],
+];
+
 export class Preloader extends Scene {
   constructor () {
     super("Preloader");
   }
 
   init () {
-    this.createLoadingBar();
     YouTubePlayables.firstFrameReady();
   }
 
   preload () {
-    // Audio
-    //    Game
-    this.load.audio("sfx-button", "assets/audio/button.wav");
-    this.load.audio("sfx-oof", "assets/audio/oof.wav");
-    this.load.audio("sfx-click", "assets/audio/click.wav");
-    this.load.audio("sfx-death", "assets/audio/death.wav");
-    
-    //   Minigames
-    this.load.audio("sfx-fail", "assets/audio/minigames/fail.wav");
-    this.load.audio("sfx-drag-connect", "assets/audio/minigames/drag/connect.wav");
-    this.load.audio("sfx-tap-complete", "assets/audio/minigames/tap/complete.wav");
-    this.load.audio("sfx-tap-button", "assets/audio/minigames/tap/button.wav");
-    this.load.audio("sfx-spin-turn", "assets/audio/minigames/spin/spin.wav");
-    this.load.audio("sfx-spin-complete", "assets/audio/minigames/spin/complete.wav");
-    this.load.audio("sfx-pump-down", "assets/audio/minigames/pump/down.wav");
-    this.load.audio("sfx-pump-complete", "assets/audio/minigames/pump/complete.wav");
-    this.load.audio("sfx-timing-click", "assets/audio/minigames/timing/click.wav");
-    this.load.audio("sfx-timing-complete", "assets/audio/minigames/timing/complete.wav");
-    this.load.audio("sfx-swipe-move", "assets/audio/minigames/swipe/move.wav");
-    this.load.audio("sfx-swipe-complete", "assets/audio/minigames/swipe/complete.wav");
-
-    // Images
-    //   Game
-    this.load.image("belt-tile", "assets/game/belt.png");
-    this.load.image("rectangle-border", "assets/game/rectangle-border.png");
-    this.load.image("rectangle-insert", "assets/game/rectangle-insert.png");
-    this.load.image("square-border", "assets/game/square-border.png");
-    this.load.image("square-insert", "assets/game/square-insert.png");
-
-    //   Items
-    this.load.image("item-background", "assets/items/background.png");
-    this.load.image("item-toaster", "assets/items/toaster.png");
-    this.load.image("item-walkie", "assets/items/walkie.png");
-    this.load.image("item-tire", "assets/items/tire.png");
-    this.load.image("item-pipe", "assets/items/pipe.png");
-    this.load.image("item-light", "assets/items/light.png");
-    this.load.image("item-gauge", "assets/items/gauge.png");
-
-    //   Minigames
-    this.load.image("drag-background", "assets/minigames/drag/background.png");
-    this.load.image("drag-plug", "assets/minigames/drag/plug.png");
-    this.load.image("drag-socket", "assets/minigames/drag/socket.png");
-    this.load.image("tap-walkie", "assets/minigames/tap/walkie-close.png");
-    this.load.image("pump-body", "assets/minigames/pump/body.png");
-    this.load.image("spin-pipe", "assets/minigames/spin/pipe.png");
-    this.load.image("spin-valve", "assets/minigames/spin/valve.png");
-    this.load.image("swipe-light", "assets/minigames/swipe/light.png");
-    this.load.image("swipe-bulb", "assets/minigames/swipe/bulb.png");
-    this.load.image("swipe-bulb-insert", "assets/minigames/swipe/bulb-insert.png");
-    this.load.image("timing-gauge", "assets/minigames/timing/gauge.png");
+    AUDIO.forEach(([key, path]) => this.load.audio(key, AUDIO_BASE + path));
+    IMAGES.forEach(([key, path]) => this.load.image(key, IMAGE_BASE + path));
   }
 
   create () {
     this.scene.start("MainMenu");
-  }
-
-  createLoadingBar () {
- 
   }
 }
