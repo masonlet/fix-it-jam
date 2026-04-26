@@ -31,6 +31,7 @@ export class Game extends Scene {
     this.audio.register("spin-complete", "sfx-spin-complete");
     this.audio.register("pump-complete", "sfx-pump-complete");
     this.audio.register("timing-click", "sfx-timing-click");
+    this.audio.register("timing-complete", "sfx-timing-complete");
  
     // Variables
     this.elapsedTime = 0;

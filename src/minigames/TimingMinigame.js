@@ -125,6 +125,7 @@ export class TimingMinigame {
       this.#redraw();
       if (this.hits >= TUNING.HITS_REQUIRED) {
         this.acceptInput = false;
+        this.scene.audio.play("timing-complete");
         this.onComplete();
       }
     } else {
